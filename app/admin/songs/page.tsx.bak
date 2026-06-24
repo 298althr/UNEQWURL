@@ -1,0 +1,287 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import BottomNav from "@/components/BottomNav";
+import type { SongAdmin } from "@/lib/types";
+
+export default function AdminSongsPage() {
+  const [songs, setSongs] = useState<SongAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+
+  // Add song form state
+  const [newTitle, setNewTitle] = useState("");
+  const [newArtist, setNewArtist] = useState("");
+  const [newFileUrl, setNewFileUrl] = useState("");
+  const [newDuration, setNewDuration] = useState("");
+  const [adding, setAdding] = useState(false);
+
+  // Bulk upload state
+  const [bulkJson, setBulkJson] = useState("");
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkAdding, setBulkAdding] = useState(false);
+
+  function loadSongs() {
+    fetch("/api/admin/songs")
+      .then((r) => r.json())
+      .then(setSongs)
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    loadSongs();
+  }, []);
+
+  async function saveBenchmark(id: string) {
+    try {
+      const benchmark_settings = JSON.parse(draft);
+      const res = await fetch(`/api/admin/songs/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ benchmark_settings, benchmark_ready: true }),
+      });
+      if (!res.ok) throw new Error("Save failed");
+      setEditingId(null);
+      setMessage("Benchmark saved");
+      loadSongs();
+    } catch {
+      setMessage("Invalid JSON or save failed");
+    }
+  }
+
+  async function addSong(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newTitle.trim() || !newFileUrl.trim()) return;
+    setAdding(true);
+    try {
+      const res = await fetch("/api/admin/songs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newTitle.trim(),
+          artist: newArtist.trim() || null,
+          file_url: newFileUrl.trim(),
+          duration_seconds: newDuration ? parseInt(newDuration, 10) : null,
+        }),
+      });
+      if (!res.ok) throw new Error("Add failed");
+      setNewTitle("");
+      setNewArtist("");
+      setNewFileUrl("");
+      setNewDuration("");
+      setMessage("Song added");
+      loadSongs();
+    } catch {
+      setMessage("Failed to add song");
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  async function addBulkSongs(e: React.FormEvent) {
+    e.preventDefault();
+    if (!bulkJson.trim()) return;
+    setBulkAdding(true);
+    try {
+      const parsed = JSON.parse(bulkJson);
+      const songsArray = Array.isArray(parsed) ? parsed : parsed.songs;
+      if (!Array.isArray(songsArray)) {
+        setMessage("JSON must be an array or an object with a 'songs' array");
+        return;
+      }
+      const res = await fetch("/api/admin/songs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ songs: songsArray }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Bulk add failed");
+      setBulkJson("");
+      setMessage(`${data.created} song(s) added`);
+      loadSongs();
+    } catch (err: any) {
+      setMessage(err?.message || "Invalid JSON or bulk add failed");
+    } finally {
+      setBulkAdding(false);
+    }
+  }
+
+  return (
+    <div className="mx-auto flex min-h-screen max-w-mobile flex-col bg-surface">
+      <header className="border-b border-white/10 px-4 py-6">
+        <Link href="/admin" className="font-mono text-xs text-muted hover:text-gold">
+          ← Dashboard
+        </Link>
+        <h1 className="font-display mt-2 text-3xl text-white">Songs</h1>
+      </header>
+
+      <main className="flex-1 px-4 py-4">
+        {message && (
+          <p className={`mb-4 font-mono text-sm ${message.includes("Failed") || message.includes("error") ? "text-red-400" : "text-gold"}`}>
+            {message}
+          </p>
+        )}
+
+        {/* Add Song Section */}
+        <div className="mb-6 rounded-xl border border-white/10 bg-panel p-4">
+          <div className="mb-3 flex items-center gap-3">
+            <h2 className="font-display text-lg text-white">
+              {bulkMode ? "Bulk Add Songs" : "Add Song"}
+            </h2>
+            <button
+              type="button"
+              onClick={() => { setBulkMode(!bulkMode); setMessage(null); }}
+              className="rounded border border-white/10 px-2 py-0.5 font-mono text-[10px] text-muted hover:text-white"
+            >
+              {bulkMode ? "Single" : "Bulk"}
+            </button>
+          </div>
+
+          {bulkMode ? (
+            <form onSubmit={addBulkSongs} className="flex flex-col gap-2">
+              <textarea
+                value={bulkJson}
+                onChange={(e) => setBulkJson(e.target.value)}
+                rows={6}
+                placeholder={`Paste JSON array of songs:\n[\n  { "title": "Song 1", "artist": "Artist", "file_url": "https://...", "duration_seconds": 180 },\n  { "title": "Song 2", "artist": "Artist", "file_url": "https://..." }\n]`}
+                className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+              />
+              <button
+                type="submit"
+                disabled={bulkAdding}
+                className="rounded bg-gold px-3 py-2 font-mono text-xs text-black disabled:opacity-50"
+              >
+                {bulkAdding ? "Adding…" : `Add Songs`}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={addSong} className="flex flex-col gap-2">
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Title *"
+                required
+                className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+              />
+              <input
+                type="text"
+                value={newArtist}
+                onChange={(e) => setNewArtist(e.target.value)}
+                placeholder="Artist"
+                className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+              />
+              <input
+                type="url"
+                value={newFileUrl}
+                onChange={(e) => setNewFileUrl(e.target.value)}
+                placeholder="File URL * (e.g. B2 public URL)"
+                required
+                className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+              />
+              <input
+                type="number"
+                value={newDuration}
+                onChange={(e) => setNewDuration(e.target.value)}
+                placeholder="Duration (seconds)"
+                className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+              />
+              <button
+                type="submit"
+                disabled={adding}
+                className="rounded bg-gold px-3 py-2 font-mono text-xs text-black disabled:opacity-50"
+              >
+                {adding ? "Adding…" : "Add Song"}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Song List */}
+        <h2 className="mb-3 font-display text-xl text-white">Library ({songs.length})</h2>
+        {loading ? (
+          <p className="font-mono text-sm text-muted">Loading…</p>
+        ) : (
+          <ul className="flex flex-col gap-4">
+            {songs.map((song) => (
+              <li
+                key={song.id}
+                className="rounded-xl border border-white/10 bg-panel p-4"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h2 className="font-display text-lg text-white">{song.title}</h2>
+                    {song.artist && (
+                      <p className="font-mono text-xs text-muted">{song.artist}</p>
+                    )}
+                  </div>
+                  <span
+                    className={`rounded px-2 py-0.5 font-mono text-[10px] uppercase ${
+                      song.benchmark_ready
+                        ? "bg-gold/20 text-gold"
+                        : "bg-white/10 text-muted"
+                    }`}
+                  >
+                    {song.benchmark_ready ? "Ready" : "Pending"}
+                  </span>
+                </div>
+
+                {song.benchmark_settings && editingId !== song.id && (
+                  <pre className="mt-3 overflow-x-auto rounded bg-black/30 p-2 font-mono text-[10px] text-muted">
+                    {JSON.stringify(song.benchmark_settings, null, 2)}
+                  </pre>
+                )}
+
+                {editingId === song.id ? (
+                  <div className="mt-3">
+                    <textarea
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      rows={6}
+                      className="w-full rounded border border-white/10 bg-black/30 p-2 font-mono text-xs text-white"
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => saveBenchmark(song.id)}
+                        className="rounded bg-gold px-3 py-1 font-mono text-xs text-black"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(null)}
+                        className="rounded border border-white/10 px-3 py-1 font-mono text-xs text-muted"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingId(song.id);
+                      setDraft(
+                        JSON.stringify(song.benchmark_settings ?? {}, null, 2)
+                      );
+                      setMessage(null);
+                    }}
+                    className="mt-3 font-mono text-xs text-gold hover:underline"
+                  >
+                    Edit benchmark
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </main>
+
+      <BottomNav />
+    </div>
+  );
+}

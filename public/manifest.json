@@ -1,0 +1,19 @@
+{
+  "name": "UNEQWURL",
+  "short_name": "UNEQWURL",
+  "description": "Audio Enhancement Studio — Hear what better audio sounds like.",
+  "start_url": "/songs",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "productivity", "education"]
+}

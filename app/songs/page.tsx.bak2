@@ -1,0 +1,571 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import BottomNav from "@/components/BottomNav";
+import ProfileDropdown from "@/components/ProfileDropdown";
+import SessionDetailModal, { type SessionDetail } from "@/components/SessionDetailModal";
+import { Music, Radio, Mic, Shield, Cloud, Download, Play, Loader2, Volume2 } from "lucide-react";
+
+type UserSession = {
+  id: string;
+  song_title: string;
+  session_start: string;
+  session_end: string;
+  average_298eq: number;
+  final_settings: { eq298: number };
+  ab_toggles: number;
+  created_at: string;
+};
+
+type Track = {
+  id: string;
+  upload_type: "music" | "podcast" | "voice";
+  source: "upload" | "youtube";
+  youtube_url: string | null;
+  original_filename: string;
+  title: string;
+  artist: string;
+  album: string | null;
+  genre: string | null;
+  file_size_bytes: number;
+  file_url: string;
+  created_at: string;
+};
+
+type ActiveSession = {
+  id: string;
+  title: string;
+  artist: string;
+  type: "music" | "podcast" | "voice";
+  isStream: boolean;
+  streamUrl?: string;
+};
+
+const UPLOAD_TYPES: { key: "music" | "podcast" | "voice"; label: string; color: string; icon: React.ReactNode }[] = [
+  { key: "music", label: "Music", color: "#6B8CFF", icon: <Music size={14} /> },
+  { key: "podcast", label: "Podcast", color: "#FFB347", icon: <Radio size={14} /> },
+  { key: "voice", label: "Voice", color: "#00D4AA", icon: <Mic size={14} /> },
+];
+
+export default function SongsPage() {
+  const router = useRouter();
+  const [sessions, setSessions] = useState<UserSession[]>([]);
+  const [uploads, setUploads] = useState<Track[]>([]);
+  const [loadingExtras, setLoadingExtras] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // YouTube engine state
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [youtubeType, setYoutubeType] = useState<"music" | "podcast" | "voice">("music");
+  const [streamLoading, setStreamLoading] = useState(false);
+  const [importLoading, setImportLoading] = useState(false);
+  const [engineMessage, setEngineMessage] = useState<string | null>(null);
+
+  // Per-user per-sound-class active session state (persisted in localStorage)
+  const [activeByType, setActiveByType] = useState<Record<"music" | "podcast" | "voice", ActiveSession | null>>(() => {
+    try {
+      const raw = localStorage.getItem("298eq_active_sessions");
+      if (raw) return JSON.parse(raw);
+    } catch { /* ignore */ }
+    return { music: null, podcast: null, voice: null };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("298eq_active_sessions", JSON.stringify(activeByType));
+  }, [activeByType]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/session-analytics").then((r) => (r.ok ? r.json() : [])),
+      fetch("/api/uploads").then((r) => (r.ok ? r.json() : [])),
+      fetch("/api/auth/me").then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([sessionsData, uploadsData, meData]) => {
+        setSessions(sessionsData.slice(0, 5));
+        setUploads(uploadsData);
+        if (meData?.role === "admin") setIsAdmin(true);
+      })
+      .catch((err) => console.error("Background load failed:", err))
+      .finally(() => setLoadingExtras(false));
+  }, []);
+
+  const tracksByType = (type: "music" | "podcast" | "voice") =>
+    uploads.filter((u) => u.upload_type === type);
+
+  async function handleStreamAndMix() {
+    if (!youtubeUrl.trim()) {
+      setEngineMessage("Enter a YouTube URL");
+      return;
+    }
+    setStreamLoading(true);
+    setEngineMessage(null);
+
+    try {
+      const res = await fetch("/api/youtube/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: youtubeUrl.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Stream failed");
+
+      const params = new URLSearchParams({
+        url: data.streamUrl,
+        type: youtubeType,
+        title: data.title,
+        artist: data.artist,
+      });
+      // Mark as active session for this sound class
+      setActiveByType((prev) => ({
+        ...prev,
+        [youtubeType]: {
+          id: `live-${Date.now()}`,
+          title: data.title,
+          artist: data.artist,
+          type: youtubeType,
+          isStream: true,
+          streamUrl: data.streamUrl,
+        },
+      }));
+      router.push(`/room/stream?${params.toString()}`);
+    } catch (err: any) {
+      setEngineMessage(err?.message || "Failed to start stream");
+    } finally {
+      setStreamLoading(false);
+    }
+  }
+
+  async function handleImportAndMix() {
+    if (!youtubeUrl.trim()) {
+      setEngineMessage("Enter a YouTube URL");
+      return;
+    }
+    setImportLoading(true);
+    setEngineMessage(null);
+
+    try {
+      // First extract metadata via stream endpoint
+      const streamRes = await fetch("/api/youtube/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: youtubeUrl.trim() }),
+      });
+      const streamData = await streamRes.json();
+      if (!streamRes.ok) throw new Error(streamData.error || "Metadata extraction failed");
+
+      // Then download to B2
+      const downloadRes = await fetch("/api/youtube/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: youtubeUrl.trim(),
+          uploadType: youtubeType,
+          title: streamData.title,
+          artist: streamData.artist,
+          duration_seconds: streamData.duration,
+        }),
+      });
+      const downloadData = await downloadRes.json();
+      if (!downloadRes.ok) throw new Error(downloadData.error || "Download failed");
+
+      // Mark as active session for this sound class
+      setActiveByType((prev) => ({
+        ...prev,
+        [youtubeType]: {
+          id: downloadData.upload.id,
+          title: downloadData.upload.title,
+          artist: downloadData.upload.artist,
+          type: youtubeType,
+          isStream: false,
+        },
+      }));
+      // Navigate to the new track's room
+      router.push(`/room/${downloadData.upload.id}`);
+    } catch (err: any) {
+      setEngineMessage(err?.message || "Failed to import");
+    } finally {
+      setImportLoading(false);
+    }
+  }
+
+  function formatSize(bytes: number) {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  }
+
+  return (
+    <div className="container mx-auto min-h-screen">
+      {/* Header */}
+      <header className="header header-with-profile">
+        <div className="logo">
+          <div className="logo-mark">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span className="logo-text">298<span>EQ</span></span>
+        </div>
+        <div className="flex items-center gap-3">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-1.5 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/20 transition-colors"
+            >
+              <Shield size={14} />
+              Admin Panel
+            </Link>
+          )}
+          <ProfileDropdown />
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="hero">
+        <div
+          className="hero-bg-image"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1670507578828-76b64166f01d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+          }}
+        />
+        <div className="hero-content">
+          <div className="hero-badge">Audio Enhancement Studio</div>
+          <h1>Hear What <span className="gradient-text">Better Audio</span> Sounds Like</h1>
+          <p>
+            Stream directly from YouTube and mix live, or import tracks to your library.
+            Adjust Low, Mid, High, and the 298EQ enhancement engine in real time.
+          </p>
+        </div>
+      </section>
+
+      {/* Active Sessions — Resume */}
+      {Object.values(activeByType).some(Boolean) && (
+        <section style={{ padding: "0 16px 16px" }}>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "16px",
+              padding: "16px",
+            }}
+          >
+            <div className="section-label" style={{ marginBottom: "10px" }}>Active Sessions</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {(Object.keys(activeByType) as ("music" | "podcast" | "voice")[])
+                .map((key) => {
+                  const active = activeByType[key];
+                  if (!active) return null;
+                  const typeConfig = UPLOAD_TYPES.find((t) => t.key === key)!;
+                  const href = active.isStream
+                    ? `/room/stream?url=${encodeURIComponent(active.streamUrl || "")}&type=${key}&title=${encodeURIComponent(active.title)}&artist=${encodeURIComponent(active.artist)}`
+                    : `/room/${active.id}`;
+                  return (
+                    <Link
+                      key={key}
+                      href={href}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        background: `${typeConfig.color}10`,
+                        border: `1px solid ${typeConfig.color}20`,
+                        textDecoration: "none",
+                        transition: "background 0.15s",
+                      }}
+                    >
+                      <Volume2 size={14} color={typeConfig.color} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: "12px", fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {active.title}
+                        </div>
+                        <div style={{ fontSize: "11px", color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {active.artist} · {typeConfig.label} {active.isStream ? "· Live Stream" : ""}
+                        </div>
+                      </div>
+                      <span style={{ fontSize: "10px", fontWeight: 700, color: typeConfig.color, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                        Resume
+                      </span>
+                    </Link>
+                  );
+                })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* YouTube Engine */}
+      <section style={{ padding: "24px 16px" }}>
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "16px",
+            padding: "20px",
+          }}
+        >
+          <div className="section-label" style={{ marginBottom: "12px" }}>YouTube Engine</div>
+          <input
+            type="text"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="Paste YouTube URL..."
+            style={{
+              width: "100%",
+              background: "rgba(0,0,0,0.3)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "10px",
+              padding: "12px 14px",
+              color: "#fff",
+              fontSize: "13px",
+              fontFamily: "monospace",
+              marginBottom: "12px",
+              outline: "none",
+            }}
+          />
+
+          <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            {UPLOAD_TYPES.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setYoutubeType(t.key)}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  padding: "8px 0",
+                  borderRadius: "10px",
+                  border: youtubeType === t.key ? "none" : "1px solid rgba(255,255,255,0.1)",
+                  background: youtubeType === t.key ? t.color : "transparent",
+                  color: youtubeType === t.key ? "#000" : "var(--muted)",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                {t.icon}
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {engineMessage && (
+            <p style={{ fontSize: "12px", color: engineMessage.includes("Failed") ? "#f87171" : "var(--gold)", marginBottom: "10px" }}>
+              {engineMessage}
+            </p>
+          )}
+
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={handleStreamAndMix}
+              disabled={streamLoading || !youtubeUrl.trim()}
+              style={{
+                flex: 1,
+                padding: "12px 0",
+                borderRadius: "10px",
+                border: "none",
+                background: "var(--gold)",
+                color: "#000",
+                fontSize: "12px",
+                fontWeight: 700,
+                cursor: streamLoading || !youtubeUrl.trim() ? "not-allowed" : "pointer",
+                opacity: streamLoading || !youtubeUrl.trim() ? 0.5 : 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+              }}
+            >
+              {streamLoading ? <Loader2 size={14} className="spin" /> : <Play size={14} />}
+              {streamLoading ? "Starting..." : "Stream & Mix Live"}
+            </button>
+            <button
+              onClick={handleImportAndMix}
+              disabled={importLoading || !youtubeUrl.trim()}
+              style={{
+                flex: 1,
+                padding: "12px 0",
+                borderRadius: "10px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.05)",
+                color: "#fff",
+                fontSize: "12px",
+                fontWeight: 700,
+                cursor: importLoading || !youtubeUrl.trim() ? "not-allowed" : "pointer",
+                opacity: importLoading || !youtubeUrl.trim() ? 0.5 : 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+              }}
+            >
+              {importLoading ? <Loader2 size={14} className="spin" /> : <Cloud size={14} />}
+              {importLoading ? "Importing..." : "Import & Save"}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Track Library */}
+      <section style={{ padding: "0 16px 24px" }}>
+        {UPLOAD_TYPES.map((type) => {
+          const tracks = tracksByType(type.key);
+          return (
+            <div key={type.key} style={{ marginBottom: "24px" }}>
+              <div className="section-label" style={{ marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ color: type.color }}>{type.icon}</span>
+                {type.label} Library ({tracks.length})
+              </div>
+
+              {loadingExtras ? (
+                <p style={{ fontSize: "13px", color: "var(--muted)" }}>Loading...</p>
+              ) : tracks.length === 0 ? (
+                <p style={{ fontSize: "13px", color: "var(--muted)", padding: "12px 0" }}>
+                  No {type.label.toLowerCase()} tracks yet. Import from YouTube above.
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {tracks.map((track) => {
+                    const isActive = activeByType[type.key]?.id === track.id;
+                    return (
+                    <div
+                      key={track.id}
+                      style={{
+                        background: isActive ? `${type.color}10` : "rgba(255,255,255,0.03)",
+                        border: isActive ? `1px solid ${type.color}30` : "1px solid rgba(255,255,255,0.06)",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        transition: "background 0.15s",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setActiveByType((prev) => ({
+                          ...prev,
+                          [type.key]: {
+                            id: track.id,
+                            title: track.title,
+                            artist: track.artist,
+                            type: type.key,
+                            isStream: false,
+                          },
+                        }));
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.background = isActive ? `${type.color}15` : "rgba(255,255,255,0.06)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLDivElement).style.background = isActive ? `${type.color}10` : "rgba(255,255,255,0.03)";
+                      }}
+                    >
+                      <Link
+                        href={`/room/${track.id}`}
+                        style={{ flex: 1, minWidth: 0, textDecoration: "none" }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
+                          <span
+                            style={{
+                              fontSize: "10px",
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.06em",
+                              color: type.color,
+                              background: `${type.color}15`,
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {type.key}
+                          </span>
+                          {track.source === "youtube" && (
+                            <Cloud size={12} color="var(--accent)" />
+                          )}
+                          {isActive && (
+                            <Volume2 size={12} color={type.color} />
+                          )}
+                        </div>
+                        <div style={{ fontSize: "14px", fontWeight: 600, color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {track.title}
+                        </div>
+                        <div style={{ fontSize: "12px", color: "var(--muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {track.artist}
+                          {track.album ? ` · ${track.album}` : ""}
+                          {track.genre ? ` · ${track.genre}` : ""}
+                        </div>
+                      </Link>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+                        <a
+                          href={track.file_url}
+                          download
+                          title="Download"
+                          style={{ color: "var(--muted)", display: "flex", alignItems: "center" }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Download size={14} />
+                        </a>
+                        <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "monospace" }}>
+                          {formatSize(track.file_size_bytes)}
+                        </span>
+                      </div>
+                    </div>
+                  )})}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </section>
+
+      {/* Recent Sessions */}
+      <section style={{ padding: "0 16px 24px" }}>
+        <div className="submissions-panel">
+          <div className="section-label">Recent Sessions</div>
+          {loadingExtras && sessions.length === 0 ? (
+            <p style={{ fontSize: "13px", color: "var(--muted)", padding: "8px 0" }}>
+              Loading sessions...
+            </p>
+          ) : sessions.length === 0 ? (
+            <p style={{ fontSize: "13px", color: "var(--muted)", padding: "8px 0" }}>
+              No sessions yet. Pick a track above to start mixing.
+            </p>
+          ) : (
+            sessions.map((s) => (
+              <div
+                key={s.id}
+                className="submission-item"
+                style={{ cursor: "pointer" }}
+              >
+                <div className="sub-meta">
+                  <h4>{s.song_title}</h4>
+                  <p>
+                    Enhanced {Math.round(((s.final_settings?.eq298 ?? 0) + 12) / 24 * 100)}%
+                    {s.ab_toggles > 0 ? ` · ${s.ab_toggles} A/B toggle${s.ab_toggles === 1 ? "" : "s"}` : ""}
+                  </p>
+                </div>
+                <div className="sub-date">
+                  {new Date(s.created_at).toLocaleDateString()}
+                  <br />
+                  {new Date(s.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <BottomNav />
+    </div>
+  );
+}

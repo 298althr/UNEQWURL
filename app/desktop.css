@@ -1,0 +1,112 @@
+/* ============================================================
+   DESKTOP / TABLET LAYOUT — LANDSCAPE ORIENTATION
+   Applies when screen width > height:
+     · Phone rotated to landscape
+     · Tablet in landscape
+     · Any laptop or desktop screen (nearly always landscape)
+   ============================================================ */
+@media (orientation: landscape) {
+
+  body {
+    padding-bottom: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    padding: 32px 24px;
+  }
+
+  /* Header */
+  .header {
+    height: 64px;
+    margin-bottom: 48px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 56px 48px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+
+  .hero-content {
+    max-width: 650px;
+  }
+
+  .hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  /* Audio source cards — 3-column default, 4-column for four-up */
+  .sources {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .sources.four-up {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 12px 6px;
+  }
+
+  .source-card {
+    padding: 24px;
+  }
+  .glow-card .card-inner {
+    padding: 24px;
+  }
+
+  /* Audio panel — 2-column (now-playing | spectrum) */
+  .audio-panel {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 20px;
+  }
+
+  /* Console workspace — spectrum beside controls */
+  .console-workspace {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .console-workspace .spectrum-card {
+    min-width: 0;
+  }
+
+  .console-workspace .controls-grid {
+    display: flex;
+    gap: 10px;
+    padding: 0;
+    overflow-x: visible;
+    align-self: stretch;
+  }
+
+  /* EQ controls — horizontal mixer channel strip */
+  .controls-grid {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 0;
+    overflow-x: auto;
+  }
+
+  /* Desktop top nav visible on landscape */
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  /* Bottom mobile nav is hidden on landscape */
+  .mobile-nav {
+    display: none !important;
+  }
+
+  /* Logo size */
+  .logo-text {
+    font-size: 22px;
+  }
+}

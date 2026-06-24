@@ -1,0 +1,98 @@
+/* ============================================================
+   MOBILE LAYOUT — PORTRAIT ORIENTATION
+   Applies when screen height > width:
+     · Phone held upright
+     · Tablet in portrait
+     · Desktop window narrower than it is tall
+   ============================================================ */
+@media (orientation: portrait) {
+
+  body {
+    padding-bottom: 80px;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 24px 16px;
+  }
+
+  /* Header */
+  .header {
+    height: 56px;
+    margin-bottom: 28px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  /* Audio source cards — single column stack */
+  .sources {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .source-card {
+    padding: 20px;
+  }
+
+  /* Audio panel — stacked vertically */
+  .audio-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .now-playing {
+    min-height: auto;
+  }
+
+  .spectrum-card {
+    min-height: 148px;
+  }
+
+  /* EQ controls — horizontal scrollable mixer strip */
+  .controls-grid {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Desktop top nav hidden on portrait */
+  .desktop-nav {
+    display: none !important;
+  }
+
+  /* Bottom mobile nav is visible on portrait */
+  .mobile-nav {
+    display: flex;
+  }
+
+  /* Logo size */
+  .logo-text {
+    font-size: 20px;
+  }
+
+  /* Mobile sources grid for 4 cards */
+  .sources.four-up {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 8px 4px;
+  }
+}

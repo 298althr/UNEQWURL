@@ -1,0 +1,78 @@
+# ─── Dependencies ───
+node_modules/
+.next/
+
+# ─── Environment ───
+.env
+.env.local
+.env.*.local
+
+# ─── Python ───
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ─── Build artifacts ───
+dist/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# ─── Logs ───
+*.log
+server.log
+
+# ─── Docker (local only — Railway builds its own image) ───
+docker-compose.yml
+
+# ─── Not needed for Vercel or Railway deployment ───
+# Legacy/deprecated engine
+spotdl-engine/
+
+# Audacity source study (74MB zip + extracted)
+audacity-master/
+audacity-master.zip
+
+# Documentation & planning (not needed at runtime)
+docs/
+*.md
+!README.md
+HANDOFF.md
+HANDOVER.md
+IMPLEMENTATION-PLAN.md
+MIGRATION-PLAN-v2.md
+REALISTIC_ROADMAP.md
+AUDACITY_STUDY.md
+CONSOLE_SETUP_STUDY.md
+298eq.md
+algorithm.md
+upgrade.md
+
+# Test artifacts
+tests/
+test-results/
+benchmark-data/
+
+# Scratch & temp
+scratch/
+uploads/
+1.html
+
+# Design system (Figma exports, not runtime)
+design-system/
+
+# Console setup study assets
+Console-Setup/
+VDJ/
+
+# Dev tooling configs
+.devin/
+
+# Vendor (if any bundled libs not needed)
+vendor/
+
+# Scripts (one-time DB migrations/diagnostics, not needed at runtime)
+scripts/
+
+# Types (handled by npm packages or inline declarations)
+types/

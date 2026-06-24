@@ -74,5 +74,5 @@ vendor/
 # Scripts (one-time DB migrations/diagnostics, not needed at runtime)
 scripts/
 
-# Types (handled by npm packages or inline declarations)
-types/
+# Types (backblaze-b2.d.ts is needed for build)
+# types/

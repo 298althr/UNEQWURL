@@ -44,7 +44,8 @@ import sys
 import warnings
 warnings.filterwarnings("ignore")
 
-y, sr = librosa.load(r"${tmpWav.replace(/\\/g, "/")}", sr=22050)
+filepath = sys.argv[1]
+y, sr = librosa.load(filepath, sr=22050)
 
 # --- BPM ---
 tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
@@ -183,7 +184,7 @@ result = {
 print(json.dumps(result))
 `;
 
-    const output = execFileSync("python3", ["-c", pyScript], {
+    const output = execFileSync("python3", ["-c", pyScript, tmpWav], {
       encoding: "utf-8",
       timeout: 120000,
       maxBuffer: 50 * 1024 * 1024,

@@ -38,7 +38,7 @@ declare module "backblaze-b2" {
   export default class B2 {
     constructor(config: B2Config);
     authorize(): Promise<B2Response<{ accountId: string; authorizationToken: string; apiUrl: string; downloadUrl: string }>>;
-    getUploadUrl(args: GetUploadUrlArgs): Promise<B2Response<{ uploadUrl: string; uploadAuthToken: string }>>;
+    getUploadUrl(args: GetUploadUrlArgs): Promise<B2Response<{ uploadUrl: string; authorizationToken: string }>>;
     uploadFile(args: UploadFileArgs): Promise<B2Response<{ fileId: string; fileName: string; contentLength: number; contentSha1: string }>>;
     deleteFileVersion(args: DeleteFileVersionArgs): Promise<B2Response<{ fileId: string; fileName: string }>>;
     downloadFileByName(args: DownloadFileByNameArgs): Promise<B2Response<unknown>>;

@@ -5,7 +5,7 @@
  */
 import express from "express";
 import cors from "cors";
-import { execSync } from "child_process";
+import { execSync, execFileSync } from "child_process";
 import { readFileSync, unlinkSync, existsSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -103,20 +103,20 @@ app.post("/youtube/stream", async (req, res) => {
       return res.status(500).json({ error: "yt-dlp is not installed" });
     }
 
-    const streamCommand = `${ytDlp} -f "bestaudio[ext=webm]/bestaudio/best" --get-url "${url}"`;
+    const streamArgs = ["-f", "bestaudio[ext=webm]/bestaudio/best", "--get-url", "--no-playlist", "--no-cache-dir", url];
     let streamUrl: string;
     try {
-      streamUrl = execSync(streamCommand, { encoding: "utf-8", timeout: 30000 }).trim();
+      streamUrl = execFileSync(ytDlp, streamArgs, { encoding: "utf-8", timeout: 30000 }).trim();
     } catch (err: any) {
       const errMsg = err?.stderr?.toString?.() || err?.message || String(err);
       console.error("[yt-dlp stream] error:", errMsg);
       return res.status(500).json({ error: "Failed to extract stream URL", detail: errMsg.slice(0, 500) });
     }
 
-    const metaCommand = `${ytDlp} --dump-json --no-warnings "${url}"`;
+    const metaArgs = ["--dump-json", "--no-warnings", "--no-playlist", "--no-cache-dir", url];
     let metadata: any;
     try {
-      const metaJson = execSync(metaCommand, { encoding: "utf-8", timeout: 30000 }).trim();
+      const metaJson = execFileSync(ytDlp, metaArgs, { encoding: "utf-8", timeout: 30000 }).trim();
       metadata = JSON.parse(metaJson);
     } catch (err: any) {
       console.error("[yt-dlp metadata] error:", err?.stderr?.toString?.() || err?.message || String(err));
@@ -167,14 +167,20 @@ app.post("/youtube/download", async (req, res) => {
     const baseName = sanitizeFileName(title);
     tempFile = join(tmpdir(), `${baseName}_${Date.now()}.mp3`);
 
-    const downloadCommand = `${ytDlp} -x --audio-format mp3 --audio-quality 0 -o "${tempFile}" "${url}"`;
-    console.log(`[yt-dlp download] starting: ${downloadCommand}`);
+    const downloadArgs = [
+      "-x", "--audio-format", "mp3", "--audio-quality", "0",
+      "--no-playlist", "--no-cache-dir",
+      "-o", tempFile,
+      url,
+    ];
+    console.log(`[yt-dlp download] starting: ${ytDlp} ${downloadArgs.join(" ")}`);
 
     try {
-      execSync(downloadCommand, { encoding: "utf-8", stdio: "pipe", timeout: 120000 });
+      execFileSync(ytDlp, downloadArgs, { encoding: "utf-8", stdio: "pipe", timeout: 120000 });
     } catch (err: any) {
-      console.error("[yt-dlp download] error:", err?.stderr?.toString?.() || err?.message || String(err));
-      return res.status(500).json({ error: "Failed to download audio from YouTube" });
+      const errMsg = err?.stderr?.toString?.() || err?.message || String(err);
+      console.error("[yt-dlp download] error:", errMsg);
+      return res.status(500).json({ error: "Failed to download audio from YouTube", detail: errMsg.slice(0, 500) });
     }
 
     if (!existsSync(tempFile)) {

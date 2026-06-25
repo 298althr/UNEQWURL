@@ -1,8 +1,8 @@
 import B2 from "backblaze-b2";
 
-const accountId = process.env.B2_APPLICATION_KEY_ID || "";
+const accountId = process.env.B2_APPLICATION_KEY_ID || process.env.keyID || process.env.Application_id || "";
 const applicationKey = process.env.B2_APPLICATION_KEY || "";
-const bucketName = process.env.B2_BUCKET_NAME || "";
+const bucketName = process.env.B2_BUCKET_NAME || process.env.bucketName || "";
 let bucketId = process.env.B2_BUCKET_ID || "";
 
 if (!accountId || !applicationKey || !bucketName) {
@@ -26,8 +26,12 @@ function getB2(): B2 {
 async function ensureAuth(): Promise<void> {
   const b2 = getB2();
   if (authPromise) {
-    await authPromise;
-    return;
+    try {
+      await authPromise;
+      return;
+    } catch {
+      // Previous auth failed, fall through to re-auth
+    }
   }
   authPromise = (async () => {
     try {
@@ -43,6 +47,8 @@ async function ensureAuth(): Promise<void> {
   })();
   try {
     await authPromise;
+    // Clear the promise after success so re-auth can happen if needed later
+    authPromise = null;
   } catch (err) {
     authPromise = null;
     throw err;

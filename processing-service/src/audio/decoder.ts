@@ -20,7 +20,13 @@ export function decodeAudio(input: string, maxDurationSec: number = 120): Decode
   const tmpPath = join(tmpdir(), `298eq_decode_${Date.now()}.f32`);
 
   try {
-    const args = [
+    const args: string[] = [];
+
+    if (isUrl) {
+      args.push("-timeout", "30000000", "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
+    }
+
+    args.push(
       "-y",
       "-i", input,
       "-ac", "1",
@@ -28,15 +34,11 @@ export function decodeAudio(input: string, maxDurationSec: number = 120): Decode
       "-f", "f32le",
       "-t", String(maxDurationSec),
       tmpPath,
-    ];
-
-    if (isUrl) {
-      args.unshift("-timeout", "30000000");
-    }
+    );
 
     execFileSync("ffmpeg", args, {
       stdio: ["pipe", "pipe", "pipe"],
-      timeout: 60000,
+      timeout: 120000,
       maxBuffer: 50 * 1024 * 1024,
     });
 

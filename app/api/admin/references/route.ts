@@ -56,9 +56,10 @@ export async function POST(req: NextRequest) {
       // Upload to B2
       const buffer = Buffer.from(await file.arrayBuffer());
       const ext = file.name.split(".").pop() || "mp3";
-      b2FileName = `references/${genre}-${Date.now()}.${ext}`;
-      await uploadFile("admin", "reference", b2FileName, buffer, file.type);
-      decodeUrl = getDownloadUrl(`admin/reference/${b2FileName}`);
+      const safeName = `${genre}-${Date.now()}.${ext}`;
+      const b2Result = await uploadFile("admin", "reference", safeName, buffer, file.type);
+      b2FileName = b2Result.fileName;
+      decodeUrl = getDownloadUrl(b2FileName);
     } else {
       decodeUrl = fileUrl!;
     }

@@ -38,14 +38,15 @@ export async function GET(req: Request) {
     `select
        sub.id,
        u.username,
-       so.title as song_title,
+       coalesce(s.title, up.title) as song_title,
        sub.settings,
        sub.score,
        sub.score_breakdown,
        sub.submitted_at
      from submissions sub
      join users u on u.id = sub.user_id
-     join songs so on so.id = sub.song_id
+     left join songs s on s.id = sub.song_id
+     left join user_uploads up on up.id = sub.upload_id
      ${where}
      order by sub.submitted_at desc`,
     params

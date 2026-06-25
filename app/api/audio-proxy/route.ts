@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getSessionFromCookies } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
+  const session = await getSessionFromCookies();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const url = req.nextUrl.searchParams.get("url");
   if (!url) {
     return NextResponse.json({ error: "Missing url param" }, { status: 400 });

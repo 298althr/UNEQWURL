@@ -26,25 +26,25 @@ export function decodeAudio(input: string, maxDurationSec: number = 120): Decode
   const tmpPath = join(tmpdir(), `298eq_decode_${Date.now()}.f32`);
 
   try {
-    // ffmpeg: convert to mono, 44.1kHz, f32le
-    const args = [
-      "-y",
-      "-i", input,
-      "-ac", "1",              // mono
-      "-ar", String(sampleRate),
-      "-f", "f32le",           // 32-bit float little-endian
-      "-t", String(maxDurationSec), // limit duration
-      tmpPath,
-    ];
+    const args: string[] = [];
 
     if (isUrl) {
-      // Add timeout and headers for URLs
-      args.unshift("-timeout", "30000000"); // 30s in microseconds
+      args.push("-timeout", "30000000", "-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
     }
+
+    args.push(
+      "-y",
+      "-i", input,
+      "-ac", "1",
+      "-ar", String(sampleRate),
+      "-f", "f32le",
+      "-t", String(maxDurationSec),
+      tmpPath,
+    );
 
     execFileSync("ffmpeg", args, {
       stdio: ["pipe", "pipe", "pipe"],
-      timeout: 60000,
+      timeout: 120000,
       maxBuffer: 50 * 1024 * 1024,
     });
 

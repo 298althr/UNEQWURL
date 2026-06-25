@@ -26,25 +26,28 @@ function getB2(): B2 {
 async function ensureAuth(): Promise<void> {
   const b2 = getB2();
   if (authPromise) {
-    await authPromise;
-    return;
+    try {
+      await authPromise;
+      return;
+    } catch {
+      // Previous auth failed, fall through to re-auth
+    }
   }
   authPromise = (async () => {
     try {
       const res = await b2.authorize();
-      // Capture bucketId from auth response for application keys restricted to a bucket
       const allowed = (res.data as any)?.allowed;
       if (allowed?.bucketId) {
         bucketId = allowed.bucketId;
       }
     } catch (err) {
-      // Clear the promise so the next call can retry
       authPromise = null;
       throw err;
     }
   })();
   try {
     await authPromise;
+    authPromise = null;
   } catch (err) {
     authPromise = null;
     throw err;

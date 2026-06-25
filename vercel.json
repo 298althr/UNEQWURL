@@ -2,6 +2,24 @@
   "functions": {
     "app/api/uploads/route.ts": {
       "maxDuration": 60
+    },
+    "app/api/youtube/download/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/youtube/stream/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/admin/youtube/download/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/admin/youtube/stream/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/songs/[id]/analyze/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/admin/references/route.ts": {
+      "maxDuration": 60
     }
   }
 }

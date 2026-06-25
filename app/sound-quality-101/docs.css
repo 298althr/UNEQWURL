@@ -263,7 +263,7 @@ html[data-theme="light"] .sq-hero-bg::after {
 }
 
 .sq-hero-cta-console {
-  background-image: url(/assets/cta/priority4.png);
+  background-image: url(/assets/cta/priority1.png);
   box-shadow: 0 0 40px rgba(0, 166, 255, 0.35);
 }
 

@@ -38,7 +38,7 @@ export async function ensureInit(): Promise<void> {
   if (_isReady) return;
   if (!_initPromise) {
     _initPromise = (async () => {
-      const { init } = await import("@libraz/libsonare");
+      const { init } = await import("@libraz/libsonare/dist/index.js");
       await init();
       _isReady = true;
     })();
@@ -65,7 +65,7 @@ export async function analyzeWithLibsonare(audio: DecodedAudio): Promise<Analysi
     meteringDynamicRange,
     meteringDcOffset,
     meteringDetectClipping,
-  } = await import("@libraz/libsonare");
+  } = await import("@libraz/libsonare/dist/index.js");
 
   const { samples, sampleRate, duration } = audio;
   const sr = sampleRate;

@@ -94,8 +94,8 @@ export default function ConsolePage() {
 
       {/* Hero */}
       <section className="hero relative overflow-hidden rounded-2xl mb-8">
-        <div className="hero-bg-dark absolute inset-0 bg-cover bg-center opacity-50 blur-[15px] pointer-events-none" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1170&auto=format&fit=crop')" }} />
-        <div className="absolute inset-0 pointer-events-none z-[1]" style={{ background: "linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.40) 100%)" }} />
+        <div className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/hero/console.png')" }} />
+        <div className="page-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
         <div className="relative z-[2] p-10 md:p-14">
           <div className="hero-badge">{APP_TAGLINE}</div>
           <h1>Open the <span className="gradient-text">Console</span></h1>

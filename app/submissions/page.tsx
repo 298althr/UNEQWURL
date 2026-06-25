@@ -75,14 +75,16 @@ export default function SubmissionsPage() {
       </header>
 
       <main className="pb-32" style={{ padding: "24px 20px" }}>
-        {/* Compact Hero */}
-        <div className="compact-hero">
-          <div className="hero-top-row">
-            <span className="submissions-badge">Submissions</span>
+        {/* Hero */}
+        <section className="hero relative overflow-hidden rounded-2xl mb-8">
+          <div className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/hero/results.png')" }} />
+          <div className="page-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
+          <div className="relative z-[2] p-10 md:p-14">
+            <div className="hero-badge">Submissions</div>
+            <h1>My <span className="gradient-text">Submissions</span></h1>
+            <p>Track your EQ scores across sessions, review your best mixes, and monitor your progress.</p>
           </div>
-          <h1 className="hero-title">My Submissions</h1>
-          <p className="hero-subtitle">Track your EQ scores across sessions, review your best mixes, and monitor your progress.</p>
-        </div>
+        </section>
 
         {/* Stats summary */}
         {submissions.length > 0 && (

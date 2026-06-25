@@ -4181,3 +4181,64 @@ html[data-theme="light"] .danger-zone-card {
   background: rgba(101, 0, 255, 0.20) !important;
 }
 
+/* ============================================================
+   UNIFIED PAGE HERO — photo background for all dashboard pages
+   ============================================================ */
+.page-hero-bg {
+  opacity: 0.5;
+  filter: blur(15px);
+}
+.page-hero-overlay {
+  background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.40) 100%);
+}
+html[data-theme="light"] .page-hero-bg {
+  opacity: 1 !important;
+  filter: blur(5px) !important;
+}
+html[data-theme="light"] .page-hero-overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 100%) !important;
+}
+
+/* White hero text for all photo-backed hero pages */
+.soundfiles-page-blue .hero h1,
+.submissions-page-orange .hero h1,
+.account-page .hero h1 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+}
+.soundfiles-page-blue .hero p,
+.submissions-page-orange .hero p,
+.account-page .hero p {
+  color: rgba(255,255,255,0.85) !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+.soundfiles-page-blue .hero .hero-badge,
+.submissions-page-orange .hero .hero-badge,
+.account-page .hero .hero-badge {
+  color: #ffffff !important;
+  background: rgba(0,0,0,0.35) !important;
+  border-color: rgba(255,255,255,0.25) !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.soundfiles-page-blue .hero .btn-secondary,
+.submissions-page-orange .hero .btn-secondary,
+.account-page .hero .btn-secondary {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.25) !important;
+}
+.soundfiles-page-blue .hero .btn-secondary:hover,
+.submissions-page-orange .hero .btn-secondary:hover,
+.account-page .hero .btn-secondary:hover {
+  background: rgba(255,255,255,0.18) !important;
+  border-color: rgba(255,255,255,0.40) !important;
+}
+.soundfiles-page-blue .hero .gradient-text,
+.submissions-page-orange .hero .gradient-text,
+.account-page .hero .gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+

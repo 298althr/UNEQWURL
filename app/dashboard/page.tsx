@@ -174,8 +174,8 @@ export default function SongsPage() {
 
       {/* Hero */}
       <section className="hero relative overflow-hidden rounded-2xl mb-8">
-        <div className="hero-bg-dark songs-hero-light absolute inset-0 bg-cover bg-center opacity-50 blur-[15px] pointer-events-none" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1670507578828-76b64166f01d?q=80&w=1170&auto=format&fit=crop')" }} />
-        <div className="songs-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
+        <div className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/hero/dashboard.png')" }} />
+        <div className="page-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
         <div className="relative z-[2] p-10 md:p-14">
           <div className="hero-badge">{APP_TAGLINE}</div>
           <h1>Hear What <span className="gradient-text">Better Audio</span> Sounds Like</h1>

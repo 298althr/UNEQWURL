@@ -127,14 +127,16 @@ export default function AccountPage() {
       </header>
 
       <main className="pb-32">
-        {/* Compact Hero */}
-        <div className="compact-hero">
-          <div className="hero-top-row">
-            <span className="account-badge">Account</span>
+        {/* Hero */}
+        <section className="hero relative overflow-hidden rounded-2xl mb-8">
+          <div className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/hero/profile.png')" }} />
+          <div className="page-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
+          <div className="relative z-[2] p-10 md:p-14">
+            <div className="hero-badge">Account</div>
+            <h1>Account <span className="gradient-text">Settings</span></h1>
+            <p>Manage your profile identities, active workspace configurations, and saved audio master sessions.</p>
           </div>
-          <h1 className="hero-title">Account Settings</h1>
-          <p className="hero-subtitle">Manage your profile identities, active workspace configurations, and saved audio master sessions.</p>
-        </div>
+        </section>
 
         {loading && (
           <div className="dashboard-loading">

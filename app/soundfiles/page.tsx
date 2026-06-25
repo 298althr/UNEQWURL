@@ -235,12 +235,14 @@ export default function SoundFilesPage() {
       </header>
 
       <main className="pb-32">
-        <section className="library-hero mb-7">
-          <div className="hero-title-row mb-2">
-            <h1>Sound Library</h1>
+        <section className="hero relative overflow-hidden rounded-2xl mb-8">
+          <div className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none" style={{ backgroundImage: "url('/assets/hero/library.png')" }} />
+          <div className="page-hero-overlay absolute inset-0 pointer-events-none z-[1]" />
+          <div className="relative z-[2] p-10 md:p-14">
             <div className="hero-badge">Library</div>
+            <h1>Sound <span className="gradient-text">Library</span></h1>
+            <p>Browse, manage, and stream your uploaded audio tracks and YouTube imports.</p>
           </div>
-          <p>Browse, manage, and stream your uploaded audio tracks and YouTube imports.</p>
         </section>
 
         {statusMsg && (

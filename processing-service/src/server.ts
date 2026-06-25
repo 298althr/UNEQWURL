@@ -16,6 +16,9 @@ import { autoAnalyzeTrack } from "./audio/auto-analyze";
 const app = express();
 const PORT = parseInt(process.env.PORT || "3100", 10);
 
+// Bump deployment marker v1
+console.log("[298eq-processing] Starting server v2 (libsonare 1.4.0)");
+
 // --- CORS ---
 const corsOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000")
   .split(",")

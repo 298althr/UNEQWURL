@@ -193,19 +193,23 @@ app.post("/youtube/download", async (req, res) => {
     const safeName = `${baseName}.mp3`;
     const b2Result = await uploadFile(userId, uploadType, safeName, buffer, "audio/mpeg");
 
-    // Check for existing upload of same type and delete old B2 file + DB record
-    const { rows: existing } = await query<{ id: string; b2_file_name: string; b2_file_id: string }>(
-      `SELECT id, b2_file_name, b2_file_id FROM user_uploads WHERE user_id = $1 AND upload_type = $2`,
-      [userId, uploadType]
-    );
+    const skipReplace = req.body?.skipReplace === true;
 
-    if (existing.length > 0) {
-      try {
-        await deleteFile(existing[0].b2_file_name, existing[0].b2_file_id);
-      } catch (err) {
-        console.error("[B2] Failed to delete old file:", err);
+    // Check for existing upload of same type and delete old B2 file + DB record
+    if (!skipReplace) {
+      const { rows: existing } = await query<{ id: string; b2_file_name: string; b2_file_id: string }>(
+        `SELECT id, b2_file_name, b2_file_id FROM user_uploads WHERE user_id = $1 AND upload_type = $2`,
+        [userId, uploadType]
+      );
+
+      if (existing.length > 0) {
+        try {
+          await deleteFile(existing[0].b2_file_name, existing[0].b2_file_id);
+        } catch (err) {
+          console.error("[B2] Failed to delete old file:", err);
+        }
+        await query(`DELETE FROM user_uploads WHERE id = $1`, [existing[0].id]);
       }
-      await query(`DELETE FROM user_uploads WHERE id = $1`, [existing[0].id]);
     }
 
     const { rows } = await query<{

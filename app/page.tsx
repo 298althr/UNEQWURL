@@ -64,18 +64,7 @@ export default function LandingPage() {
               className="landing-header-logo-img"
             />
           </Link>
-          <nav className="landing-header-nav">
-            {isLoggedIn ? (
-              <Link href="/dashboard" className="landing-btn landing-btn-primary landing-btn-sm">
-                <SlidersHorizontal size={16} />
-                Console
-              </Link>
-            ) : (
-              <Link href="/login" className="landing-btn landing-btn-primary landing-btn-sm">
-                Sign In
-              </Link>
-            )}
-          </nav>
+          <nav className="landing-header-nav" />
         </div>
       </header>
 
@@ -97,17 +86,13 @@ export default function LandingPage() {
               mix, and score your ear against pro benchmarks.
             </p>
             <div className="landing-cta-row">
-              {isLoggedIn ? (
-                <Link href="/dashboard" className="landing-btn landing-btn-primary">
-                  <SlidersHorizontal size={18} />
-                  Open Console
-                </Link>
-              ) : (
-                <Link href="/login" className="landing-btn landing-btn-primary">
-                  <Play size={18} />
-                  Sign In
-                </Link>
-              )}
+              <Link href="/console" className="landing-btn landing-btn-primary">
+                <SlidersHorizontal size={18} />
+                Console
+              </Link>
+              <Link href="/sound-quality-101" className="landing-btn landing-btn-ghost">
+                Sound Quality 101
+              </Link>
             </div>
           </div>
         </div>

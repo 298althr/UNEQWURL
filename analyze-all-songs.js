@@ -2,24 +2,22 @@ const { Pool } = require('pg');
 
 const PROCESSING_URL = process.env.PROCESSING_SERVICE_URL || 'http://localhost:3100';
 
-async function main() {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-  const { rows: songs } = await pool.query(
-    `SELECT id, title, bpm, musical_key FROM songs ORDER BY title`
+async function analyzeTable(pool, table, source) {
+  const { rows } = await pool.query(
+    `SELECT id, title, bpm, musical_key, analysis_status FROM ${table} ORDER BY title`
   );
 
-  console.log(`Found ${songs.length} songs to analyze via ${PROCESSING_URL}`);
+  console.log(`\nFound ${rows.length} ${source}(s) to analyze via ${PROCESSING_URL}`);
 
-  for (const song of songs) {
-    console.log(`\nAnalyzing: ${song.title} (${song.id})`);
-    console.log(`  Before: bpm=${song.bpm} key=${song.musical_key}`);
+  for (const row of rows) {
+    console.log(`\nAnalyzing: ${row.title} (${row.id})`);
+    console.log(`  Before: bpm=${row.bpm} key=${row.musical_key} status=${row.analysis_status}`);
 
     try {
       const res = await fetch(`${PROCESSING_URL}/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trackId: song.id, source: 'song' }),
+        body: JSON.stringify({ trackId: row.id, source }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -35,14 +33,20 @@ async function main() {
     }
   }
 
-  // Verify final DB state
   const { rows: final } = await pool.query(
-    `SELECT title, bpm, musical_key, analysis_status FROM songs ORDER BY title`
+    `SELECT title, bpm, musical_key, analysis_status FROM ${table} ORDER BY title`
   );
-  console.log('\n=== Final songs state ===');
+  console.log(`\n=== Final ${source} state ===`);
   for (const r of final) {
     console.log(`  ${r.title} | bpm=${r.bpm} | key=${r.musical_key} | status=${r.analysis_status}`);
   }
+}
+
+async function main() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  await analyzeTable(pool, 'songs', 'song');
+  await analyzeTable(pool, 'user_uploads', 'upload');
 
   await pool.end();
 }

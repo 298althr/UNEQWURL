@@ -34,7 +34,7 @@ audacity-master/
 audacity-master.zip
 
 # Documentation & planning (not needed at runtime)
-docs/
+/docs/
 *.md
 !README.md
 HANDOFF.md

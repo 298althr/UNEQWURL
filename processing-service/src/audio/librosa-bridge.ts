@@ -7,6 +7,18 @@ import { unlinkSync, existsSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 
+function findPython(): string | null {
+  for (const cmd of ["python3", "python"]) {
+    try {
+      execFileSync(cmd, ["--version"], { stdio: "pipe", timeout: 5000 });
+      return cmd;
+    } catch {
+      // try next
+    }
+  }
+  return null;
+}
+
 export interface AudioFeatures {
   bpm: number;
   bpm_confidence: number;
@@ -26,6 +38,12 @@ export interface AudioFeatures {
 }
 
 export function extractFeaturesWithLibrosa(input: string, maxDuration: number = 120): AudioFeatures {
+  const python = findPython();
+  if (!python) {
+    console.error("[librosa] python3/python not found — cannot extract features");
+    return getDefaultFeatures();
+  }
+
   const tmpWav = join(tmpdir(), `298eq_librosa_${Date.now()}.wav`);
 
   try {
@@ -45,42 +63,62 @@ import warnings
 warnings.filterwarnings("ignore")
 
 filepath = sys.argv[1]
-y, sr = librosa.load(filepath, sr=22050)
+y, sr = librosa.load(filepath, sr=22050, duration=120)
 
 # --- BPM ---
-tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-tempo = float(np.atleast_1d(tempo)[0])
+try:
+    beat_result = librosa.beat.beat_track(y=y, sr=sr)
+    # librosa 0.10+ returns (tempo, beats); older versions vary
+    if isinstance(beat_result, tuple):
+        tempo = float(np.atleast_1d(beat_result[0])[0])
+    else:
+        tempo = float(np.atleast_1d(beat_result)[0])
+except Exception as e:
+    tempo = 0.0
 
-# --- Key detection ---
-chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
-chroma_mean = chroma.mean(axis=1)
-key_idx = int(chroma_mean.argmax())
+# --- Key detection (Krumhansl-Schmuckler style) ---
 keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+major_profile = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
+minor_profile = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
 
-major_profile = np.array([1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1], dtype=float)
-minor_profile = np.array([1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0], dtype=float)
+try:
+    chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
+    chroma_mean = chroma.mean(axis=1)
 
-def rotate(arr, n):
-    return np.roll(arr, n)
+    best_score = -np.inf
+    best_key_idx = 0
+    best_mode = "major"
+    key_scores = []
 
-maj_score = np.dot(chroma_mean, rotate(major_profile, key_idx))
-min_score = np.dot(chroma_mean, rotate(minor_profile, key_idx))
+    for i in range(12):
+        rotated = np.roll(chroma_mean, -i)
+        maj_score = float(np.corrcoef(rotated, major_profile)[0, 1])
+        min_score = float(np.corrcoef(rotated, minor_profile)[0, 1])
+        if np.isnan(maj_score): maj_score = 0.0
+        if np.isnan(min_score): min_score = 0.0
+        key_scores.append((keys[i], "major", maj_score))
+        key_scores.append((keys[i], "minor", min_score))
+        if maj_score > best_score:
+            best_score = maj_score
+            best_key_idx = i
+            best_mode = "major"
+        if min_score > best_score:
+            best_score = min_score
+            best_key_idx = i
+            best_mode = "minor"
 
-if maj_score > min_score:
+    key_scores.sort(key=lambda x: x[2], reverse=True)
+    key_alts = [{"key": k[0], "mode": k[1], "confidence": round(k[2], 4)} for k in key_scores[:3]]
+
+    key_idx = best_key_idx
+    key_mode = best_mode
+    # Normalize confidence to [0, 1] roughly (corrcoef can be negative)
+    key_confidence = max(0.0, min(1.0, (best_score + 1) / 2))
+except Exception as e:
+    key_idx = 0
     key_mode = "major"
-    key_confidence = float(maj_score / (maj_score + min_score))
-else:
-    key_mode = "minor"
-    key_confidence = float(min_score / (maj_score + min_score))
-
-key_scores = []
-for i in range(12):
-    ms = np.dot(chroma_mean, rotate(major_profile, i))
-    ns = np.dot(chroma_mean, rotate(minor_profile, i))
-    key_scores.append((keys[i], "major", float(ms)))
-    key_scores.append((keys[i], "minor", float(ns)))
-key_scores.sort(key=lambda x: x[2], reverse=True)
-key_alts = [{"key": k[0], "mode": k[1], "confidence": k[2]} for k in key_scores[:3]]
+    key_confidence = 0.0
+    key_alts = []
 
 # --- Chords (simplified) ---
 chord_changes = []
@@ -184,7 +222,7 @@ result = {
 print(json.dumps(result))
 `;
 
-    const output = execFileSync("python3", ["-c", pyScript, tmpWav], {
+    const output = execFileSync(python, ["-c", pyScript, tmpWav], {
       encoding: "utf-8",
       timeout: 120000,
       maxBuffer: 50 * 1024 * 1024,
@@ -192,27 +230,32 @@ print(json.dumps(result))
 
     return JSON.parse(output.trim());
   } catch (e: any) {
-    console.error("librosa extraction failed:", e.message?.slice(0, 200));
-    return {
-      bpm: 0,
-      bpm_confidence: 0,
-      musical_key: "C",
-      key_mode: "major",
-      key_confidence: 0,
-      key_alternatives: [],
-      chords: [],
-      sections: [],
-      timbre: { brightness: 0, warmth: 0, punchiness: 0, roughness: 0 },
-      harmonic_energy: 0,
-      percussive_energy: 0,
-      residual_energy: 0,
-      mfcc_summary: new Array(13).fill(0),
-      onset_count: 0,
-      onset_density: 0,
-    };
+    const stderr = e.stderr ? String(e.stderr).slice(0, 500) : "";
+    console.error("[librosa] extraction failed:", e.message?.slice(0, 200), stderr);
+    return getDefaultFeatures();
   } finally {
     if (existsSync(tmpWav)) {
       try { unlinkSync(tmpWav); } catch { /* ignore */ }
     }
   }
+}
+
+function getDefaultFeatures(): AudioFeatures {
+  return {
+    bpm: 0,
+    bpm_confidence: 0,
+    musical_key: "C",
+    key_mode: "major",
+    key_confidence: 0,
+    key_alternatives: [],
+    chords: [],
+    sections: [],
+    timbre: { brightness: 0, warmth: 0, punchiness: 0, roughness: 0 },
+    harmonic_energy: 0,
+    percussive_energy: 0,
+    residual_energy: 0,
+    mfcc_summary: new Array(13).fill(0),
+    onset_count: 0,
+    onset_density: 0,
+  };
 }

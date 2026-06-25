@@ -109,6 +109,8 @@ export default function SongsPage() {
           cover_image: null,
           album: null,
           genre: "Default",
+          bpm: song.bpm ?? null,
+          musical_key: song.musical_key ?? null,
           created_at: new Date().toISOString()
         })),
         ...u

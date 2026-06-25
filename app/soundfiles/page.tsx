@@ -130,6 +130,8 @@ export default function SoundFilesPage() {
           cover_image: null,
           album: null,
           genre: "Default",
+          bpm: s.bpm ?? null,
+          musical_key: s.musical_key ?? null,
           uploaded_at: new Date().toISOString(),
           created_at: new Date().toISOString()
         })),

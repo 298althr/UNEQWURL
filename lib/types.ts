@@ -47,6 +47,7 @@ export type SongListItem = {
   musical_key?: string | null;
 };
 
+
 export type SongAdmin = SongListItem & {
   benchmark_settings: EQSettings | null;
   benchmark_weights: EQSettings | null;

@@ -303,6 +303,7 @@ app.post("/analyze", async (req, res) => {
 
     if (source === "song" && benchmarkRows.length > 0) {
       const bm = benchmarkRows[0] as any;
+      const feat = featureRows[0] as any;
       const defaultSettings = bm.optimal_eq?.headphone || bm.benchmarks?.headphone?.settings;
       const defaultWeights = bm.benchmarks?.headphone?.weights;
       await query(
@@ -311,19 +312,23 @@ app.post("/analyze", async (req, res) => {
              benchmark_weights = $2,
              benchmark_ready = true,
              analysis_status = 'ready',
-             probe_data = $3
-         WHERE id = $4`,
+             bpm = $3,
+             musical_key = $4,
+             probe_data = $5
+         WHERE id = $6`,
         [
           JSON.stringify(defaultSettings),
           JSON.stringify(defaultWeights),
+          feat?.bpm ?? null,
+          feat?.musical_key && feat?.key_mode ? `${feat.musical_key} ${feat.key_mode}` : null,
           JSON.stringify({
             genre: bm.detected_genre,
             genre_confidence: bm.genre_confidence,
             mastering_preset: bm.mastering_preset,
             lufs: (analysisRows[0] as any)?.lufs_integrated,
-            bpm: (featureRows[0] as any)?.bpm,
-            key: (featureRows[0] as any)?.musical_key,
-            key_mode: (featureRows[0] as any)?.key_mode,
+            bpm: feat?.bpm,
+            key: feat?.musical_key,
+            key_mode: feat?.key_mode,
             spectral_centroid: (analysisRows[0] as any)?.spectral_centroid_hz,
             quality_scores: {
               headphone: bm.quality_score_headphone,

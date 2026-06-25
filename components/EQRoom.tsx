@@ -546,28 +546,10 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
     setMicBpm(null);
   }, [songId, uploadType, songBpm, songKey]);
 
-  // Auto-detect BPM and key when song loads (if not already provided from DB)
-  useEffect(() => {
-    if (songBpm && songKey) return; // Already have metadata
-    if (!songUrl || songId.startsWith("live-")) return;
-    if (bpmDetecting) return;
-
-    let cancelled = false;
-    setBpmDetecting(true);
-
-    analyzeAudioFile(songUrl)
-      .then((result) => {
-        if (cancelled) return;
-        if (result.bpm) setBpm(Math.round(result.bpm));
-        if (result.key) setMusicalKey(`${result.key.key} ${result.key.mode}`);
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setBpmDetecting(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [songUrl, songId, songBpm, songKey, bpmDetecting]);
+  // BPM/Key are now cached server-side in the database (audio_features + songs/user_uploads tables).
+  // Client-side auto-detection has been removed because it downloads the full audio file in a Web Worker
+  // and was hanging indefinitely for B2-hosted tracks. If a track is missing cached values, the UI simply
+  // hides the BPM/Key chips instead of showing a spinner.
 
   // Phase 3: Poll compressor/limiter gain reduction while playing
   useEffect(() => {

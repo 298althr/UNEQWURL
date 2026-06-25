@@ -24,6 +24,8 @@ type Track = {
   cover_image: string | null;
   file_size_bytes: number;
   file_url: string;
+  bpm: number | null;
+  musical_key: string | null;
   created_at: string;
 };
 
@@ -44,9 +46,24 @@ export default function ConsolePage() {
   useEffect(() => {
     Promise.all([
       fetch("/api/uploads").then(r => r.ok ? r.json() : []),
+      fetch("/api/songs").then(r => r.ok ? r.json() : []),
       fetch("/api/auth/me").then(r => r.ok ? r.json() : null),
-    ]).then(([u, m]) => {
-      setUploads(u);
+    ]).then(([u, songs, m]) => {
+      const merged = [
+        ...songs.map((s: any) => ({
+          ...s,
+          source: "upload",
+          upload_type: s.upload_type || "music",
+          artist: s.artist || "Unknown Artist",
+          cover_image: s.cover_image ?? null,
+          bpm: s.bpm ?? null,
+          musical_key: s.musical_key ?? null,
+          file_size_bytes: 0,
+          created_at: new Date().toISOString(),
+        })),
+        ...u,
+      ];
+      setUploads(merged);
       if (m?.role === "admin") setIsAdmin(true);
     })
       .catch(err => console.error("Load failed:", err))
@@ -116,10 +133,10 @@ export default function ConsolePage() {
             <button
               key={cat.id}
               onClick={() => openPicker(cat.id)}
-              className="rounded-2xl overflow-hidden"
+              className="rounded-2xl overflow-hidden transition-transform duration-200 hover:scale-[1.03]"
               style={{ height: 200 }}
             >
-              <img src={cat.photo} alt={cat.label} className="w-full h-full object-cover" />
+              <img src={cat.photo} alt={cat.label} className="w-full h-full object-cover scale-[1.03]" />
             </button>
           ))}
         </div>

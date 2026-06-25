@@ -38,6 +38,8 @@ export type UserUpload = {
   file_size_bytes: number;
   mime_type: string;
   duration_seconds: number | null;
+  bpm: number | null;
+  musical_key: string | null;
   uploaded_at: string;
   created_at: string;
 };
@@ -54,7 +56,7 @@ export async function GET() {
       const { rows } = await query<UserUpload>(
         `select id, user_id, upload_type, source, youtube_url, original_filename, b2_file_name, b2_file_id,
                 title, artist, album, genre, cover_image,
-                file_size_bytes, mime_type, duration_seconds, uploaded_at, created_at
+                file_size_bytes, mime_type, duration_seconds, bpm, musical_key, uploaded_at, created_at
          from user_uploads
          where user_id = $1
          order by uploaded_at desc`,

@@ -17,7 +17,7 @@ export async function GET(
   const data = await getCached(`song:${params.id}`, 30000, async () => {
     // Try preset songs first
     const { rows: songRows } = await query<SongListItem>(
-      `select id, title, artist, file_url, duration_seconds, category as upload_type
+      `select id, title, artist, file_url, duration_seconds, category as upload_type, bpm, musical_key
        from songs
        where id = $1`,
       [params.id]

@@ -197,8 +197,13 @@ export async function autoAnalyzeTrack(track: TrackInfo): Promise<boolean> {
 
     if (source === "upload") {
       await query(
-        `UPDATE user_uploads SET analysis_ready = true, genre = $1, bpm = $2, musical_key = $3, duration_seconds = $4 WHERE id = $5`,
+        `UPDATE user_uploads SET analysis_ready = true, genre = $1, bpm = $2, musical_key = $3, duration_seconds = $4, analysis_status = 'ready' WHERE id = $5`,
         [benchmark.detected_genre, features.bpm, `${features.musical_key} ${features.key_mode}`, analysis.duration_seconds, id]
+      );
+    } else if (source === "song") {
+      await query(
+        `UPDATE songs SET bpm = $1, musical_key = $2, duration_seconds = $3, analysis_status = 'ready' WHERE id = $4`,
+        [features.bpm, `${features.musical_key} ${features.key_mode}`, analysis.duration_seconds, id]
       );
     }
 

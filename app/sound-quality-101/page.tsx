@@ -161,22 +161,6 @@ export default function SoundQuality101Page() {
     return () => observer.disconnect();
   }, []);
 
-  const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const rx = (y - cy) / 25;
-    const ry = (cx - x) / 25;
-    card.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.015, 1.015, 1.015)`;
-  };
-
-  const resetTilt = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.transform = "perspective(1200px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
-  };
-
   if (!mounted) return null;
 
   return (
@@ -272,11 +256,13 @@ export default function SoundQuality101Page() {
 
         <div className="sq-section">
           {/* Lesson 1 */}
-          <article
+          <motion.article
             id="lesson-1"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
             tabIndex={0}
             aria-label="Lesson 1: Your ears are liars"
           >
@@ -319,14 +305,16 @@ export default function SoundQuality101Page() {
                 <p>Go to the 298EQ frequency sweeper. Boost the 3–5 kHz knob. Notice how the track instantly sounds way louder to your ears, even though the electrical volume meter hasn't moved at all? That's your brain playing tricks on you.</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           {/* Lesson 2 */}
-          <article
+          <motion.article
             id="lesson-2"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Lesson 2: Dealing with echoey rooms"
           >
@@ -366,14 +354,16 @@ export default function SoundQuality101Page() {
                 <p>Want to simulate what happens when the crowd walks in? Take your EQ and pull down 200–500 Hz (the mud), and boost 2–4 kHz (the clarity). That's exactly what an audience does to a room naturally.</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           {/* Lesson 3 */}
-          <article
+          <motion.article
             id="lesson-3"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Lesson 3: Stopping feedback and stage bleed"
           >
@@ -417,14 +407,16 @@ export default function SoundQuality101Page() {
                 <p>Put a high-pass filter (HPF) on a vocal track. Next, use a narrow EQ cut between 250–400 Hz. Listen to how all that gross, muddy stage wash just disappears, leaving the voice crystal clear.</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           {/* Lesson 4 */}
-          <article
+          <motion.article
             id="lesson-4"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Lesson 4: Making words clear"
           >
@@ -470,14 +462,16 @@ export default function SoundQuality101Page() {
                 <p>To make vocals punch through a dense mix without just turning up the volume: Cut the "boxiness" at 200–400 Hz, add some bite at 2–3 kHz, and pull down 5–8 kHz a tiny bit so the "S" sounds don't rip people's ears off.</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           {/* Lesson 5 */}
-          <article
+          <motion.article
             id="lesson-5"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Lesson 5: The pre-show checklist"
           >
@@ -510,14 +504,16 @@ export default function SoundQuality101Page() {
                 </div>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           {/* Lesson 6 */}
-          <article
+          <motion.article
             id="lesson-6"
-            className="sq-lesson-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Lesson 6: Cables, routing and realistic limits"
           >
@@ -556,16 +552,18 @@ export default function SoundQuality101Page() {
                 <p style={{ color: "var(--gold)", marginTop: "0.5rem" }}><strong>Pro Tip:</strong> Know the limits of the rig you are working on. Mix for clarity and safety first. Do not try to force a small system to do a giant system's job.</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           <div className="sq-divider">The Troubleshooting Cheat Sheet</div>
 
           {/* Troubleshooting */}
-          <article
+          <motion.article
             id="troubleshooting"
-            className="sq-lesson-card sq-bonus-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card sq-bonus-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Bonus: troubleshooting workflow"
           >
@@ -624,16 +622,18 @@ export default function SoundQuality101Page() {
                 </div>
               </div>
             </div>
-          </article>
+          </motion.article>
 
           <div className="sq-divider instructor">Instructor Appendix</div>
 
           {/* Instructor */}
-          <article
+          <motion.article
             id="instructor"
-            className="sq-lesson-card sq-instructor-card sq-tilt sq-haptic"
-            onMouseMove={handleTilt}
-            onMouseLeave={resetTilt}
+            className="sq-lesson-card sq-instructor-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
             aria-label="Instructor appendix"
           >
@@ -735,7 +735,7 @@ export default function SoundQuality101Page() {
                 ))}
               </div>
             </div>
-          </article>
+          </motion.article>
         </div>
       </main>
 

@@ -38,7 +38,8 @@ export async function ensureInit(): Promise<void> {
   if (_isReady) return;
   if (!_initPromise) {
     _initPromise = (async () => {
-      const { init } = await import("@libraz/libsonare");
+      const sonare = await new Function("return import('@libraz/libsonare')")();
+      const { init } = sonare;
       await init();
       _isReady = true;
     })();
@@ -49,6 +50,7 @@ export async function ensureInit(): Promise<void> {
 export async function analyzeWithLibsonare(audio: DecodedAudio): Promise<AnalysisResult> {
   await ensureInit();
 
+  const sonare = await new Function("return import('@libraz/libsonare')")();
   const {
     lufsInterleaved,
     ebur128LoudnessRange,
@@ -65,7 +67,7 @@ export async function analyzeWithLibsonare(audio: DecodedAudio): Promise<Analysi
     meteringDynamicRange,
     meteringDcOffset,
     meteringDetectClipping,
-  } = await import("@libraz/libsonare");
+  } = sonare;
 
   const { samples, sampleRate, duration } = audio;
   const sr = sampleRate;

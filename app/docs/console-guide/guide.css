@@ -225,19 +225,19 @@
 
 .status-active {
   background: rgba(34, 197, 94, 0.12);
-  color: #22c55e;
+  color: #14532d;
   border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .status-warning {
   background: rgba(255, 179, 71, 0.12);
-  color: #ffb347;
+  color: #9a4b00;
   border: 1px solid rgba(255, 179, 71, 0.2);
 }
 
 .status-inactive {
   background: rgba(248, 113, 113, 0.12);
-  color: #f87171;
+  color: #b91c1c;
   border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
@@ -386,7 +386,7 @@
   flex-shrink: 0;
   background: rgba(255, 88, 174, 0.1);
   border: 1px solid rgba(255, 88, 174, 0.2);
-  color: var(--accent);
+  color: #7c2d12;
   z-index: 1;
 }
 
@@ -534,16 +534,16 @@
 }
 
 .decision-tree .dt-symptom {
-  color: var(--accent);
+  color: #c2410c;
   font-weight: 700;
 }
 
 .decision-tree .dt-test {
-  color: #00a6ff;
+  color: #0077cc;
 }
 
 .decision-tree .dt-fix {
-  color: #22c55e;
+  color: #15803d;
 }
 
 /* ── Meter Preview ── */
@@ -571,6 +571,20 @@
   height: 100%;
   border-radius: 4px;
   transition: width 0.3s ease;
+}
+
+/* ── Light Mode Button Overrides ── */
+html[data-theme="light"] .guide-btn {
+  color: #000000;
+}
+html[data-theme="light"] .guide-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000000;
+}
+html[data-theme="light"] .guide-btn-primary:hover {
+  background: var(--accent);
+  filter: brightness(0.9);
 }
 
 /* ── Print / PDF Styles ── */

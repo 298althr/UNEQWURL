@@ -36,6 +36,15 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
     _setDensity(getDensity());
     _setReducedMotion(getReducedMotion());
     setHydrated(true);
+
+    // Cross-tab logout: if another tab logs out, redirect this tab to login
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "auth:logout" && e.newValue) {
+        window.location.href = "/login";
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const handleSetTheme = (t: Theme) => {

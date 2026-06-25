@@ -25,7 +25,30 @@ export default function ProfileDropdown() {
     : "xx";
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Continue clearing local state even if the network call fails
+    }
+    // Clear local state that could leak across sessions
+    try {
+      localStorage.removeItem("298eq_active_sessions");
+      localStorage.removeItem("298eq_room_state");
+      localStorage.removeItem("298eq_console_settings");
+      sessionStorage.clear();
+    } catch {
+      // ignore storage errors
+    }
+    // Broadcast logout so other tabs invalidate
+    try {
+      localStorage.setItem("auth:logout", String(Date.now()));
+    } catch {
+      // ignore
+    }
+    // Notify service worker to clear cached auth pages
+    if (navigator.serviceWorker?.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: "CLEAR_AUTH_CACHE" });
+    }
     window.location.href = "/login";
   };
 
@@ -38,10 +61,11 @@ export default function ProfileDropdown() {
         type="button"
         className="profile-trigger"
         aria-label="User profile"
+        data-testid="profile-trigger"
       >
         {initials}
       </button>
-      <div className="profile-dropdown">
+      <div className="profile-dropdown" data-testid="profile-dropdown">
         {username && <div className="profile-user">{username}</div>}
 
         {/* Theme toggle */}
@@ -70,7 +94,7 @@ export default function ProfileDropdown() {
             Admin Panel
           </Link>
         )}
-        <button type="button" onClick={handleLogout}>
+        <button type="button" onClick={handleLogout} data-testid="logout-button">
           <LogOut size={14} />
           Logout
         </button>

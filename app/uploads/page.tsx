@@ -326,6 +326,7 @@ export default function UploadsPage() {
 
         {statusMsg && (
           <div
+            data-testid="upload-status"
             style={{
               marginBottom: "16px",
               padding: "12px 16px",
@@ -477,6 +478,7 @@ export default function UploadsPage() {
                         </span>
                         <input
                           type="file"
+                          data-testid={`file-input-${type.key}`}
                           accept=".mp3,.wav,.ogg,.m4a,.mp4,audio/*"
                           style={{ display: "none" }}
                           ref={(el) => { fileInputRefs.current[type.key] = el; }}

@@ -3973,7 +3973,7 @@ html[data-theme="light"] .danger-zone-card {
 
 .landing-footer-copy {
   font-size: 13px;
-  color: #666677;
+  color: #a0a0b0;
   margin: 0;
 }
 
@@ -4241,4 +4241,37 @@ html[data-theme="light"] .page-hero-overlay {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
+
+/* ============================================================
+   LIGHT MODE — CTA BUTTON OVERRIDES
+   Solid accent background/border with black text for readability
+   ============================================================ */
+html[data-theme="light"] .btn-primary {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #000000 !important;
+}
+html[data-theme="light"] .btn-primary:hover {
+  background: var(--accent-dark) !important;
+  border-color: var(--accent-dark) !important;
+  color: #000000 !important;
+}
+
+html[data-theme="light"] .btn-secondary {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #000000 !important;
+}
+html[data-theme="light"] .btn-secondary:hover {
+  background: var(--accent-dark) !important;
+  border-color: var(--accent-dark) !important;
+  color: #000000 !important;
+}
+
+html[data-theme="light"] .auth-submit-btn {
+  color: #000000 !important;
+  border: 1px solid currentColor !important;
+}
+
+/* Hero/photo-background buttons keep their translucent white-text styling above */
 

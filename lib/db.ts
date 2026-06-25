@@ -30,12 +30,12 @@ export function getPool(): Pool {
     pool = new Pool({
       connectionString,
       ssl: { rejectUnauthorized: false },
-      max: 20,
-      idleTimeoutMillis: 30000,
+      max: 12,
+      idleTimeoutMillis: 10000,
       connectionTimeoutMillis: 15000,
       keepAlive: true,
       keepAliveInitialDelayMillis: 3000,
-      allowExitOnIdle: false,
+      allowExitOnIdle: true,
     });
 
     // Log pool errors so we can diagnose stale connections

@@ -142,7 +142,7 @@ export default function LoginPage() {
                 <Download size={16} />
                 Install App
               </button>
-              <button type="button" className="pwa-dismiss-btn" onClick={handleDismiss}>
+              <button type="button" className="pwa-dismiss-btn" onClick={handleDismiss} data-testid="pwa-dismiss">
                 <X size={14} />
                 Ignore
               </button>
@@ -182,7 +182,7 @@ export default function LoginPage() {
             <h1>Welcome</h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="auth-form">
+          <form onSubmit={handleSubmit} className="auth-form" data-testid="login-form">
             <div className="auth-field">
               <input
                 id="username"
@@ -192,6 +192,7 @@ export default function LoginPage() {
                 autoComplete="username"
                 required
                 disabled={isSubmitting}
+                data-testid="login-username"
               />
             </div>
 
@@ -205,40 +206,36 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 required
                 disabled={isSubmitting}
+                data-testid="login-password"
               />
               <Link href="#" className="auth-forgot-link">Forgot your password?</Link>
             </div>
 
             {status === "error" && error && (
-              <div className="auth-error">{error}</div>
+              <div className="auth-error" data-testid="login-error">{error}</div>
             )}
 
             {status === "success" && (
-              <div className="auth-success">Login successful! Redirecting...</div>
+              <div className="auth-success" data-testid="login-success">Login successful! Redirecting...</div>
             )}
 
             <button
               type="submit"
               disabled={isSubmitting}
               className="auth-submit-btn"
+              data-testid="login-submit"
             >
               {isSubmitting ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <div className="auth-secondary-card">
-            <p>
-              Don&apos;t have an account?{" "}
-              <Link href="/register">Register here</Link>
-            </p>
-          </div>
         </div>
 
         <footer className="auth-footer-links">
           <div className="auth-socials">
-            <Link href="#" className="auth-social-icon"><Mail size={20} /></Link>
-            <Link href="#" className="auth-social-icon"><Globe size={20} /></Link>
-            <Link href="#" className="auth-social-icon"><MessageSquare size={20} /></Link>
+            <Link href="#" className="auth-social-icon" aria-label="Email us"><Mail size={20} /></Link>
+            <Link href="#" className="auth-social-icon" aria-label="Visit website"><Globe size={20} /></Link>
+            <Link href="#" className="auth-social-icon" aria-label="Contact support"><MessageSquare size={20} /></Link>
           </div>
           <nav className="auth-legal-nav">
             <Link href="#">Terms of Use</Link>

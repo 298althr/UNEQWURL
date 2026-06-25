@@ -2,10 +2,17 @@ import { NextResponse } from "next/server";
 import { getSessionFromCookies } from "@/lib/auth";
 import { query } from "@/lib/db";
 
+function noCache(response: NextResponse) {
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
+}
+
 export async function GET() {
   const session = await getSessionFromCookies();
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return noCache(NextResponse.json({ error: "Unauthorized" }, { status: 401 }));
   }
 
   try {
@@ -22,19 +29,19 @@ export async function GET() {
     );
 
     if (rows.length === 0) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return noCache(NextResponse.json({ error: "User not found" }, { status: 404 }));
     }
 
     const user = rows[0];
     const normalizedRole = user.role === "user" ? "student" : user.role;
-    return NextResponse.json({
+    return noCache(NextResponse.json({
       username: user.username,
       role: normalizedRole,
       email: user.email ?? `${user.username.replace(/\s+/g, ".").toLowerCase()}@UNEQWURL.com`,
       phone: user.phone ?? "+1 (555) 298-4491",
       displayName: user.display_name ?? user.username,
       avatarUrl: user.avatar_url,
-    });
+    }));
   } catch (err: any) {
     // Fallback for legacy schema without profile columns
     if (err?.code === "42703") {
@@ -43,18 +50,18 @@ export async function GET() {
         [session.userId]
       );
       if (rows.length === 0) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
+        return noCache(NextResponse.json({ error: "User not found" }, { status: 404 }));
       }
       const user = rows[0];
       const normalizedRole = user.role === "user" ? "student" : user.role;
-      return NextResponse.json({
+      return noCache(NextResponse.json({
         username: user.username,
         role: normalizedRole,
         email: `${user.username.replace(/\s+/g, ".").toLowerCase()}@UNEQWURL.com`,
         phone: "+1 (555) 298-4491",
         displayName: user.username,
         avatarUrl: null,
-      });
+      }));
     }
     throw err;
   }

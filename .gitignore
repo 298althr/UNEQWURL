@@ -49,9 +49,10 @@ algorithm.md
 upgrade.md
 
 # Test artifacts
-tests/
 test-results/
 benchmark-data/
+tests/*
+!tests/playwright/
 
 # Scratch & temp
 scratch/

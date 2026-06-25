@@ -4,7 +4,18 @@ import { safeJsonBody } from "@/lib/body-parser";
 import { hashPassword } from "@/lib/auth";
 import { getUserFolderPrefix } from "@/lib/b2-storage";
 
+const registrationEnabled =
+  process.env.REGISTRATION_ENABLED === "true" ||
+  process.env.NODE_ENV !== "production";
+
 export async function POST(req: Request) {
+  if (!registrationEnabled) {
+    return NextResponse.json(
+      { error: "Registration is currently closed." },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await safeJsonBody(req);
     if (!body) {

@@ -3325,3 +3325,14 @@ html[data-density="compact"] .fx-module {
     justify-content: center;
   }
 }
+
+/* ============================================================
+   LIGHT MODE — accent CTA buttons get black text
+   ============================================================ */
+html[data-theme="light"] .preset-pill.active,
+html[data-theme="light"] .preset-save-btn,
+html[data-theme="light"] .eq-toggle-btn.active,
+html[data-theme="light"] .lesson-mode-btn.active,
+html[data-theme="light"] .lesson-float-step-pill {
+  color: #000000 !important;
+}

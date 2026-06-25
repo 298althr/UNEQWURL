@@ -23,15 +23,33 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-  // Only cache same-origin GET requests for shell navigation
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) {
+  const url = new URL(request.url);
+
+  // Never intercept non-GET or cross-origin requests
+  if (request.method !== "GET" || url.origin !== self.location.origin) {
     return;
   }
+
+  // Never cache authenticated pages or API endpoints
+  const authSensitive = [
+    "/api/",
+    "/dashboard",
+    "/admin",
+    "/room",
+    "/account",
+    "/soundfiles",
+    "/uploads",
+    "/submissions",
+  ];
+  if (authSensitive.some((path) => url.pathname.startsWith(path))) {
+    return;
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        if (response && response.status === 200) {
+        if (response && response.status === 200 && response.type === "basic") {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone)).catch(() => {});
         }
@@ -39,4 +57,11 @@ self.addEventListener("fetch", (event) => {
       }).catch(() => cached);
     })
   );
+});
+
+// Listen for logout broadcast from clients and clear shell cache
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "CLEAR_AUTH_CACHE") {
+    caches.delete(CACHE_NAME).catch(() => {});
+  }
 });

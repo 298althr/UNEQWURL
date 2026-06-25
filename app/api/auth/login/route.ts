@@ -7,11 +7,18 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 
+function noCache(response: NextResponse) {
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+  return response;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await safeJsonBody(req);
     if (!body) {
-      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+      return noCache(NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }));
     }
     const username = String(body.username ?? "").trim();
     const password = String(body.password ?? "");
@@ -28,10 +35,10 @@ export async function POST(req: Request) {
     const user = rows[0];
     if (!user) {
       // Do NOT call verifyPassword for non-existent users — prevents timing attack
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return noCache(NextResponse.json({ error: "Invalid credentials" }, { status: 401 }));
     }
     if (!(await verifyPassword(password, user.password_hash))) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return noCache(NextResponse.json({ error: "Invalid credentials" }, { status: 401 }));
     }
 
     const normalizedRole = user.role === "user" ? "student" : user.role;
@@ -45,17 +52,17 @@ export async function POST(req: Request) {
       role: normalizedRole,
     });
     response.cookies.set(sessionCookieOptions(token, req));
-    return response;
+    return noCache(response);
   } catch (err: any) {
     console.error("[login] Error:", err?.message || err);
     const isTimeout = String(err?.message || "").includes("timeout") || err?.code === "ETIMEDOUT";
-    return NextResponse.json(
+    return noCache(NextResponse.json(
       {
         error: isTimeout
           ? "Database connection timed out. The database may be paused — try again in a moment."
           : "Login failed",
       },
       { status: 500 }
-    );
+    ));
   }
 }

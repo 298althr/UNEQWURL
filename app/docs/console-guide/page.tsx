@@ -81,24 +81,24 @@ const CHAIN_NODES = [
    FREQUENCY BANDS DATA
    ───────────────────────────────────────────────────────────── */
 const FREQ_BANDS = [
-  { range: "20–60 Hz", name: "Sub-bass", color: "#ef4444", issue: "Boomy, muddy", score: 75 },
-  { range: "60–250 Hz", name: "Bass", color: "#f97316", issue: "Boomy, flabby", score: 68 },
-  { range: "250–500 Hz", name: "Low-mids", color: "#eab308", issue: "Boxy, congested", score: 55 },
-  { range: "500 Hz–2 kHz", name: "Mids", color: "#22c55e", issue: "Nasal, honky", score: 72 },
-  { range: "2–5 kHz", name: "Presence", color: "#06b6d4", issue: "Harsh, piercing", score: 80 },
-  { range: "5–10 kHz", name: "Brightness", color: "#3b82f6", issue: "Sibilance", score: 65 },
-  { range: "10–20 kHz", name: "Air", color: "#a855f7", issue: "Dull, lifeless", score: 58 },
+  { range: "20–60 Hz", name: "Sub-bass", color: "#b91c1c", issue: "Boomy, muddy", score: 75 },
+  { range: "60–250 Hz", name: "Bass", color: "#c2410c", issue: "Boomy, flabby", score: 68 },
+  { range: "250–500 Hz", name: "Low-mids", color: "#a16207", issue: "Boxy, congested", score: 55 },
+  { range: "500 Hz–2 kHz", name: "Mids", color: "#15803d", issue: "Nasal, honky", score: 72 },
+  { range: "2–5 kHz", name: "Presence", color: "#0e7490", issue: "Harsh, piercing", score: 80 },
+  { range: "5–10 kHz", name: "Brightness", color: "#1d4ed8", issue: "Sibilance", score: 65 },
+  { range: "10–20 kHz", name: "Air", color: "#7e22ce", issue: "Dull, lifeless", score: 58 },
 ];
 
 /* ─────────────────────────────────────────────────────────────
    EQ BAND DETAILS
    ───────────────────────────────────────────────────────────── */
 const EQ_BANDS = [
-  { band: "Low", freq: "100 Hz", type: "Low Shelf", range: "-12 to +12 dB", color: "#ef4444" },
-  { band: "Mid", freq: "1 kHz", type: "Peaking", range: "-12 to +12 dB", color: "#22c55e" },
-  { band: "High", freq: "8 kHz", type: "High Shelf", range: "-12 to +12 dB", color: "#3b82f6" },
-  { band: "298EQ", freq: "298 Hz", type: "Peaking Q=1.4", range: "-12 to +12 dB", color: "#a855f7" },
-  { band: "Gain", freq: "—", type: "Makeup Gain", range: "-12 to +12 dB", color: "#f97316" },
+  { band: "Low", freq: "100 Hz", type: "Low Shelf", range: "-12 to +12 dB", color: "#b91c1c" },
+  { band: "Mid", freq: "1 kHz", type: "Peaking", range: "-12 to +12 dB", color: "#15803d" },
+  { band: "High", freq: "8 kHz", type: "High Shelf", range: "-12 to +12 dB", color: "#1d4ed8" },
+  { band: "298EQ", freq: "298 Hz", type: "Peaking Q=1.4", range: "-12 to +12 dB", color: "#7e22ce" },
+  { band: "Gain", freq: "—", type: "Makeup Gain", range: "-12 to +12 dB", color: "#c2410c" },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -336,7 +336,11 @@ export default function ConsoleGuidePage() {
       </div>
 
       {/* ── HERO ── */}
-      <div className="guide-hero">
+      <div className="guide-hero relative overflow-hidden rounded-2xl">
+        <div
+          className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: "url('/assets/hero/dashboard.png')" }}
+        />
         <div className="guide-hero-badge">
           <Headphones size={12} />
           Console Room Guide
@@ -621,7 +625,7 @@ export default function ConsoleGuidePage() {
                   style={{ height: `${band.score}%`, background: band.color }}
                 />
                 <div className="bar-chart-label">{band.name}</div>
-                <div className="bar-chart-label" style={{ opacity: 0.5 }}>{band.range}</div>
+                <div className="bar-chart-label" style={{ color: "#666" }}>{band.range}</div>
               </div>
             ))}
           </div>
@@ -690,7 +694,7 @@ export default function ConsoleGuidePage() {
                   <tr key={i}>
                     <td style={{ fontWeight: 700 }}>{p.param}</td>
                     <td style={{ color: "var(--muted)" }}>{p.range}</td>
-                    <td style={{ color: "var(--accent)" }}>{p.default}</td>
+                    <td style={{ color: "#c2410c" }}>{p.default}</td>
                     <td style={{ color: "var(--muted)" }}>{p.desc}</td>
                   </tr>
                 ))}
@@ -783,7 +787,7 @@ export default function ConsoleGuidePage() {
               <tbody>
                 {FX_CHAIN.map((fx, i) => (
                   <tr key={i}>
-                    <td style={{ color: "var(--accent)", fontWeight: 700 }}>{fx.order}</td>
+                    <td style={{ color: "#c2410c", fontWeight: 700 }}>{fx.order}</td>
                     <td style={{ fontWeight: 600 }}>{fx.name}</td>
                     <td style={{ color: "var(--muted)" }}>{fx.desc}</td>
                   </tr>
@@ -929,7 +933,7 @@ export default function ConsoleGuidePage() {
                 {CONTEXT_PRIORITY.map((c, i) => (
                   <tr key={i}>
                     <td style={{ fontWeight: 700 }}>{c.context}</td>
-                    <td style={{ color: "var(--accent)" }}>{c.p1}</td>
+                    <td style={{ color: "#c2410c" }}>{c.p1}</td>
                     <td style={{ color: "var(--muted)" }}>{c.p2}</td>
                     <td style={{ color: "var(--muted)" }}>{c.p3}</td>
                   </tr>
@@ -1145,12 +1149,12 @@ export default function ConsoleGuidePage() {
                   <tr><th>Level</th><th>Value</th></tr>
                 </thead>
                 <tbody>
-                  <tr><td>Average target</td><td style={{ color: "#22c55e", fontWeight: 700 }}>-18 dBFS</td></tr>
-                  <tr><td>Peak maximum</td><td style={{ color: "#ffb347", fontWeight: 700 }}>-6 dBFS</td></tr>
-                  <tr><td>Absolute ceiling</td><td style={{ color: "#f87171", fontWeight: 700 }}>0 dBFS</td></tr>
+                  <tr><td>Average target</td><td style={{ color: "#15803d", fontWeight: 700 }}>-18 dBFS</td></tr>
+                  <tr><td>Peak maximum</td><td style={{ color: "#9a4b00", fontWeight: 700 }}>-6 dBFS</td></tr>
+                  <tr><td>Absolute ceiling</td><td style={{ color: "#b91c1c", fontWeight: 700 }}>0 dBFS</td></tr>
                   <tr><td>Minimum headroom</td><td style={{ fontWeight: 700 }}>6 dB</td></tr>
                   <tr><td>Healthy crest factor</td><td style={{ fontWeight: 700 }}>12+ dB</td></tr>
-                  <tr><td>Streaming target</td><td style={{ color: "var(--accent)", fontWeight: 700 }}>-14 LUFS</td></tr>
+                  <tr><td>Streaming target</td><td style={{ color: "#c2410c", fontWeight: 700 }}>-14 LUFS</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1202,8 +1206,8 @@ export default function ConsoleGuidePage() {
                   <tr><th>Class</th><th>Color</th><th>Macro Focus</th></tr>
                 </thead>
                 <tbody>
-                  <tr><td style={{ color: "var(--orange)" }}>Music</td><td>Orange</td><td>Reverb, width, warmth</td></tr>
-                  <tr><td style={{ color: "#00a6ff" }}>Podcast</td><td>Blue</td><td>De-ess, gate, clarity</td></tr>
+                  <tr><td style={{ color: "#c2410c" }}>Music</td><td>Orange</td><td>Reverb, width, warmth</td></tr>
+                  <tr><td style={{ color: "#0077cc" }}>Podcast</td><td>Blue</td><td>De-ess, gate, clarity</td></tr>
                   <tr><td style={{ color: "var(--red)" }}>Voice / Live</td><td>Red</td><td>Gate, pitch, compression</td></tr>
                   <tr><td style={{ color: "var(--purple)" }}>Stream</td><td>Purple</td><td>Consistency, LUFS, limiter</td></tr>
                 </tbody>
@@ -1226,7 +1230,7 @@ export default function ConsoleGuidePage() {
           <p style={{ fontSize: 12, color: "var(--muted)", margin: 0 }}>
             UNEQWURL Console Room Guide · Generated from live code audit · {new Date().toLocaleDateString()}
           </p>
-          <p style={{ fontSize: 11, color: "var(--muted)", margin: "8px 0 0", opacity: 0.6 }}>
+          <p style={{ fontSize: 11, color: "#666", margin: "8px 0 0" }}>
             All 27 controls verified active · Web Audio API · WEQ8 v0.2.2 · Next.js 14
           </p>
         </div>

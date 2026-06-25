@@ -113,7 +113,17 @@ html[data-theme="light"] .sq-header {
   padding: 7rem 1.5rem 4rem;
   overflow: hidden;
   text-align: center;
+  --accent: #00a6ff;
+  --accent-light: #4dc4ff;
+  --accent-dark: #0077cc;
 }
+
+.sq-lesson-card[data-accent="purple"] { --accent: #6500ff; --accent-light: #9d5cff; --accent-dark: #3b00b0; }
+.sq-lesson-card[data-accent="pink"] { --accent: #ff0056; --accent-light: #ff5c8d; --accent-dark: #b3003d; }
+.sq-lesson-card[data-accent="blue"] { --accent: #00a6ff; --accent-light: #4dc4ff; --accent-dark: #0077cc; }
+.sq-lesson-card[data-accent="magenta"] { --accent: #8b0046; --accent-light: #c40066; --accent-dark: #5c002e; }
+.sq-lesson-card[data-accent="orange"] { --accent: hsl(27, 93%, 60%); --accent-light: hsl(27, 93%, 75%); --accent-dark: hsl(27, 93%, 45%); }
+.sq-lesson-card[data-accent="dark-purple"] { --accent: #3b00b0; --accent-light: #6b33e0; --accent-dark: #250070; }
 
 .sq-hero-bg {
   position: absolute;
@@ -259,12 +269,12 @@ html[data-theme="light"] .sq-hero-bg::after {
 
 .sq-hero-cta-primary {
   background-image: url(/assets/cta/priority0.jpg);
-  box-shadow: 0 0 40px rgba(101, 0, 255, 0.35);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .sq-hero-cta-console {
-  background-image: url(/assets/cta/priority1.png);
-  box-shadow: 0 0 40px rgba(0, 166, 255, 0.35);
+  background-image: url(/assets/cta/priority1.jpg);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .sq-hero-cta:hover {

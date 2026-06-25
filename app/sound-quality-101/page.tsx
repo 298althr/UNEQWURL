@@ -327,6 +327,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="what-is-sound-quality"
             className="sq-lesson-card"
+            data-accent="purple"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -375,6 +376,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="factors-influencing"
             className="sq-lesson-card"
+            data-accent="pink"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -421,6 +423,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="metrics"
             className="sq-lesson-card"
+            data-accent="blue"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -490,6 +493,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="how-to-measure"
             className="sq-lesson-card"
+            data-accent="magenta"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -536,6 +540,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="when-to-measure"
             className="sq-lesson-card"
+            data-accent="orange"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -584,6 +589,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="finding-faults"
             className="sq-lesson-card sq-bonus-card"
+            data-accent="dark-purple"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}

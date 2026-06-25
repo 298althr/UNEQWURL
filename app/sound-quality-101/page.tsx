@@ -97,7 +97,7 @@ export default function SoundQuality101Page() {
 
   useEffect(() => {
     setMounted(true);
-    const saved = typeof window !== "undefined" ? (localStorage.getItem("theme") as "light" | "dark" | null) : null;
+    const saved = typeof window !== "undefined" ? (localStorage.getItem("298eq-theme") as "light" | "dark" | null) : null;
     const prefersDark = typeof window !== "undefined" ? window.matchMedia("(prefers-color-scheme: dark)").matches : true;
     const initial = saved || (prefersDark ? "dark" : "light");
     setTheme(initial);
@@ -108,7 +108,7 @@ export default function SoundQuality101Page() {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
-    if (typeof window !== "undefined") localStorage.setItem("theme", next);
+    if (typeof window !== "undefined") localStorage.setItem("298eq-theme", next);
     haptic(10);
   }, [theme]);
 

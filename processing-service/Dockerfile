@@ -23,8 +23,9 @@ RUN pip3 install --no-cache-dir --break-system-packages yt-dlp
 RUN pip3 install --no-cache-dir --break-system-packages librosa numpy
 
 # --- Node dependencies (full install for build) ---
-COPY package.json package-lock.json* ./
-RUN npm install
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci
 
 # --- App source ---
 COPY tsconfig.json ./

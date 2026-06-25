@@ -4066,3 +4066,118 @@ html[data-theme="light"] .danger-zone-card {
   }
 }
 
+/* ============================================================
+   CONSOLE PAGE — purple accent (matches room/console identity)
+   ============================================================ */
+.console-page {
+  --accent: var(--purple);
+  --accent-light: #8533ff;
+  --accent-dark: #4d00e6;
+  --bg-glow-primary: rgba(101, 0, 255, 0.055);
+  --bg-glow-secondary: rgba(133, 51, 255, 0.04);
+  --bg-glow-tertiary: rgba(255, 0, 86, 0.03);
+}
+
+.console-page .desktop-nav a[data-nav-item="console"].active,
+.console-page .mobile-nav a[data-nav-item="console"].active {
+  color: var(--purple);
+  background: rgba(101, 0, 255, 0.10);
+  border-color: rgba(101, 0, 255, 0.30);
+}
+
+.console-page .btn-primary {
+  border-color: var(--purple);
+}
+
+.console-page .btn-primary:hover {
+  background: rgba(101, 0, 255, 0.08);
+  border-color: #8533ff;
+  box-shadow: 0 0 15px rgba(101, 0, 255, 0.12);
+}
+
+.console-page .text-accent {
+  color: var(--purple) !important;
+}
+
+.console-page .bg-accent {
+  background-color: var(--purple) !important;
+}
+
+.console-page .border-accent {
+  border-color: var(--purple) !important;
+}
+
+/* Console hero text — white with shadow over photo */
+.console-page .hero h1,
+.console-page .hero p {
+  color: #ffffff !important;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+}
+
+.console-page .hero .hero-badge {
+  color: #ffffff !important;
+  background: rgba(0,0,0,0.35) !important;
+  border-color: rgba(255,255,255,0.25) !important;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+.console-page .hero .btn-secondary {
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.25) !important;
+}
+
+.console-page .hero .btn-secondary:hover {
+  background: rgba(255,255,255,0.18) !important;
+  border-color: rgba(255,255,255,0.40) !important;
+}
+
+.console-page .hero .gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #c8a8ff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Console category cards */
+.console-category-card {
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.console-category-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.console-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.console-card-cta {
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.console-category-card:hover .console-card-cta {
+  opacity: 1;
+}
+
+/* Admin button override on console page */
+.console-page .header-desktop-actions a[href="/admin"] {
+  border-color: rgba(101, 0, 255, 0.30) !important;
+  background: rgba(101, 0, 255, 0.10) !important;
+  color: var(--purple) !important;
+}
+
+.console-page .header-desktop-actions a[href="/admin"]:hover {
+  background: rgba(101, 0, 255, 0.20) !important;
+}
+

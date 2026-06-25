@@ -103,13 +103,14 @@ app.post("/youtube/stream", async (req, res) => {
       return res.status(500).json({ error: "yt-dlp is not installed" });
     }
 
-    const streamCommand = `${ytDlp} -f 251 --get-url "${url}"`;
+    const streamCommand = `${ytDlp} -f "bestaudio[ext=webm]/bestaudio/best" --get-url "${url}"`;
     let streamUrl: string;
     try {
       streamUrl = execSync(streamCommand, { encoding: "utf-8", timeout: 30000 }).trim();
     } catch (err: any) {
-      console.error("[yt-dlp stream] error:", err?.stderr?.toString?.() || err?.message || String(err));
-      return res.status(500).json({ error: "Failed to extract stream URL" });
+      const errMsg = err?.stderr?.toString?.() || err?.message || String(err);
+      console.error("[yt-dlp stream] error:", errMsg);
+      return res.status(500).json({ error: "Failed to extract stream URL", detail: errMsg.slice(0, 500) });
     }
 
     const metaCommand = `${ytDlp} --dump-json --no-warnings "${url}"`;

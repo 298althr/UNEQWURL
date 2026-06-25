@@ -56,8 +56,8 @@ export async function GET() {
                 title, artist, album, genre, cover_image,
                 file_size_bytes, mime_type, duration_seconds, uploaded_at, created_at
          from user_uploads
-         where user_id = $1 or source = 'youtube'
-         order by source asc, upload_type asc, uploaded_at desc`,
+         where user_id = $1
+         order by uploaded_at desc`,
         [session.userId]
       );
       return rows;

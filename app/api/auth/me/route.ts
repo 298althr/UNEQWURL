@@ -30,7 +30,7 @@ export async function GET() {
     return NextResponse.json({
       username: user.username,
       role: normalizedRole,
-      email: user.email ?? `${user.username.replace(/\s+/g, ".").toLowerCase()}@creators.UNEQWURL.com`,
+      email: user.email ?? `${user.username.replace(/\s+/g, ".").toLowerCase()}@UNEQWURL.com`,
       phone: user.phone ?? "+1 (555) 298-4491",
       displayName: user.display_name ?? user.username,
       avatarUrl: user.avatar_url,
@@ -50,7 +50,7 @@ export async function GET() {
       return NextResponse.json({
         username: user.username,
         role: normalizedRole,
-        email: `${user.username.replace(/\s+/g, ".").toLowerCase()}@creators.UNEQWURL.com`,
+        email: `${user.username.replace(/\s+/g, ".").toLowerCase()}@UNEQWURL.com`,
         phone: "+1 (555) 298-4491",
         displayName: user.username,
         avatarUrl: null,

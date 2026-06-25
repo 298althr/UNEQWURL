@@ -288,7 +288,7 @@ h1, h2, h3 {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  z-index: 2;
+  z-index: 100;
 }
 
 /* ============================================================
@@ -1840,7 +1840,7 @@ html[data-theme="light"] .visualizer-bg { background: rgba(0,0,0,0.55); }
   width: 180px;
   padding: 8px;
   display: none;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
 

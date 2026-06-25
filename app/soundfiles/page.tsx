@@ -110,14 +110,43 @@ export default function SoundFilesPage() {
 
   async function fetchTracks() {
     try {
-      const res = await fetch("/api/uploads");
-      if (!res.ok) throw new Error("Failed to load tracks");
-      setTracks(await res.json());
-    } catch { setStatusMsg("Could not load your sound files."); }
-    finally { setLoading(false); }
+      const [uRes, sRes] = await Promise.all([
+        fetch("/api/uploads"),
+        fetch("/api/songs")
+      ]);
+      
+      const uData = uRes.ok ? await uRes.json() : [];
+      const sData = sRes.ok ? await sRes.json() : [];
+      
+      // Merge user uploads with admin/default songs
+      // Admin songs are treated as 'music' type by default
+      const merged = [
+        ...sData.map((s: any) => ({
+          ...s,
+          source: "upload",
+          upload_type: "music",
+          artist: s.artist || "Unknown Artist",
+          b2_file_name: s.file_url.split('/').pop(),
+          file_size_bytes: 0,
+          cover_image: null,
+          album: null,
+          genre: "Default",
+          uploaded_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
+        })),
+        ...uData
+      ];
+      
+      setTracks(merged);
+    } catch {
+      setStatusMsg("Could not load your sound files.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function formatSize(bytes: number) {
+    if (!bytes) return "0 MB";
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   }
@@ -286,7 +315,7 @@ export default function SoundFilesPage() {
         </section>
 
         {statusMsg && (
-          <div className={`mb-4 px-4 py-3 rounded-[var(--r-md)] text-[13px] font-semibold ${statusMsg.includes("failed") || statusMsg.includes("Could not") || statusMsg.includes("error") ? "bg-red-500/10 text-red-400" : "text-accent"}`} style={{ background: statusMsg.includes("failed") || statusMsg.includes("Could not") || statusMsg.includes("error") ? undefined : "rgba(208,128,168,0.08)" }}>{statusMsg}</div>
+          <div className={`mb-4 px-4 py-3 rounded-[var(--r-md)] text-[13px] font-semibold ${statusMsg.includes("failed") || statusMsg.includes("Could not") || statusMsg.includes("error") || statusMsg.includes("exceeds") || statusMsg.includes("limit") ? "bg-red-500/10 text-red-400" : "text-accent"}`} style={{ background: statusMsg.includes("failed") || statusMsg.includes("Could not") || statusMsg.includes("error") || statusMsg.includes("exceeds") || statusMsg.includes("limit") ? undefined : "rgba(208,128,168,0.08)" }}>{statusMsg}</div>
         )}
 
         {/* Upload & Import Section */}

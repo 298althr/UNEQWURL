@@ -94,8 +94,28 @@ export default function SongsPage() {
     Promise.all([
       fetch("/api/session-analytics").then(r => r.ok ? r.json() : []),
       fetch("/api/uploads").then(r => r.ok ? r.json() : []),
+      fetch("/api/songs").then(r => r.ok ? r.json() : []),
       fetch("/api/auth/me").then(r => r.ok ? r.json() : null),
-    ]).then(([s, u, m]) => { setSessions(s.slice(0, 5)); setUploads(u); if (m?.role === "admin") setIsAdmin(true); })
+    ]).then(([s, u, songs, m]) => {
+      setSessions(s.slice(0, 5));
+      // Merge user uploads with admin/default songs
+      const mergedTracks = [
+        ...songs.map((song: any) => ({
+          ...song,
+          source: "upload",
+          upload_type: "music",
+          artist: song.artist || "Unknown Artist",
+          file_size_bytes: 0,
+          cover_image: null,
+          album: null,
+          genre: "Default",
+          created_at: new Date().toISOString()
+        })),
+        ...u
+      ];
+      setUploads(mergedTracks);
+      if (m?.role === "admin") setIsAdmin(true);
+    })
       .catch(err => console.error("Background load failed:", err))
       .finally(() => setLoadingExtras(false));
   }, []);
@@ -139,6 +159,7 @@ export default function SongsPage() {
   }
 
   function formatSize(bytes: number) {
+    if (!bytes) return "0 MB";
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   }

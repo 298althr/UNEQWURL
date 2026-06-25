@@ -8,7 +8,6 @@ import {
   ChevronUp,
   ChevronDown,
   Home,
-  Headphones,
   Play,
   Volume2,
   Music,
@@ -18,6 +17,7 @@ import {
   Activity,
   BookOpen,
   ArrowDown,
+  Download,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { APP_NAME } from "@/lib/brand";
@@ -87,6 +87,24 @@ function haptic(ms = 5) {
   }
 }
 
+let html2pdfLoadPromise: Promise<any> | null = null;
+
+function loadHtml2Pdf() {
+  if (html2pdfLoadPromise) return html2pdfLoadPromise;
+  html2pdfLoadPromise = new Promise((resolve, reject) => {
+    if (typeof window === "undefined") return reject();
+    const w = window as any;
+    if (w.html2pdf) return resolve(w.html2pdf);
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+    script.async = true;
+    script.onload = () => resolve((window as any).html2pdf);
+    script.onerror = () => reject(new Error("Failed to load html2pdf"));
+    document.head.appendChild(script);
+  });
+  return html2pdfLoadPromise;
+}
+
 const sectionIds = ["what-is-sound-quality", "factors-influencing", "metrics", "how-to-measure", "when-to-measure", "finding-faults"];
 
 export default function SoundQuality101Page() {
@@ -110,6 +128,27 @@ export default function SoundQuality101Page() {
     if (typeof window !== "undefined") localStorage.setItem("298eq-theme", next);
     haptic(10);
   }, [theme]);
+
+  const downloadPdf = useCallback(async () => {
+    try {
+      const html2pdf = await loadHtml2Pdf();
+      const element = document.getElementById("sq-tutorial-content");
+      if (!element) return;
+      haptic(10);
+      await html2pdf()
+        .set({
+          margin: 10,
+          filename: "sound-quality-101.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(element)
+        .save();
+    } catch {
+      window.print();
+    }
+  }, []);
 
   const scrollToSection = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(index, sectionIds.length - 1));
@@ -165,11 +204,24 @@ export default function SoundQuality101Page() {
   return (
     <div className="sq-tutorial">
       <header className="sq-header">
-        <Link href="/" className="sq-header-logo sq-focusable">
-          <Headphones size={20} />
-          <span>{APP_NAME}</span>
-        </Link>
+        <div className="sq-header-logo-center">
+          <Link href="/" className="sq-header-logo sq-focusable" aria-label="Go home">
+            <img
+              src="/assets/logo/footer-logo-allpages.png"
+              alt={APP_NAME}
+              className="sq-header-logo-img"
+            />
+          </Link>
+        </div>
         <div className="sq-header-actions">
+          <button
+            className="sq-header-btn sq-haptic sq-focusable"
+            onClick={downloadPdf}
+            aria-label="Download as PDF"
+            title="Download as PDF"
+          >
+            <Download size={18} />
+          </button>
           <Link href="/" className="sq-home-btn sq-haptic sq-focusable" aria-label="Go home" title="Go home" onClick={() => haptic(5)}>
             <Home size={18} />
           </Link>
@@ -253,7 +305,7 @@ export default function SoundQuality101Page() {
           </div>
         </section>
 
-        <div className="sq-section">
+        <div id="sq-tutorial-content" className="sq-section">
           {/* Section 1: What is Sound Quality? */}
           <motion.article
             id="what-is-sound-quality"
@@ -266,13 +318,15 @@ export default function SoundQuality101Page() {
             aria-label="What is sound quality?"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Volume2 size={14} />
-                Module 1
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/console.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Volume2 size={14} />
+                  Module 1
+                </div>
+                <h2 className="sq-lesson-title">What is Sound Quality?</h2>
+                <p className="sq-lesson-subtitle">The goal: clear, balanced, safe sound</p>
               </div>
-              <h2 className="sq-lesson-title">What is Sound Quality?</h2>
-              <p className="sq-lesson-subtitle">The goal: clear, balanced, safe sound</p>
             </div>
             <div className="sq-lesson-body">
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
@@ -312,13 +366,15 @@ export default function SoundQuality101Page() {
             aria-label="What affects sound quality?"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Music size={14} />
-                Module 2
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/dashboard.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Music size={14} />
+                  Module 2
+                </div>
+                <h2 className="sq-lesson-title">What Affects Sound Quality?</h2>
+                <p className="sq-lesson-subtitle">The environment, the gear, and the operator</p>
               </div>
-              <h2 className="sq-lesson-title">What Affects Sound Quality?</h2>
-              <p className="sq-lesson-subtitle">The environment, the gear, and the operator</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-grid">
@@ -356,13 +412,15 @@ export default function SoundQuality101Page() {
             aria-label="Metrics that matter"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Activity size={14} />
-                Module 3
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/library.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Activity size={14} />
+                  Module 3
+                </div>
+                <h2 className="sq-lesson-title">Metrics That Matter</h2>
+                <p className="sq-lesson-subtitle">Numbers that describe what you hear</p>
               </div>
-              <h2 className="sq-lesson-title">Metrics That Matter</h2>
-              <p className="sq-lesson-subtitle">Numbers that describe what you hear</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-table-responsive">
@@ -423,13 +481,15 @@ export default function SoundQuality101Page() {
             aria-label="How to measure sound quality"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Mic size={14} />
-                Module 4
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/profile.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Mic size={14} />
+                  Module 4
+                </div>
+                <h2 className="sq-lesson-title">How to Measure Sound Quality</h2>
+                <p className="sq-lesson-subtitle">Use your ears, plus the right tools</p>
               </div>
-              <h2 className="sq-lesson-title">How to Measure Sound Quality</h2>
-              <p className="sq-lesson-subtitle">Use your ears, plus the right tools</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-grid">
@@ -467,13 +527,15 @@ export default function SoundQuality101Page() {
             aria-label="When to measure sound quality"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <AlertTriangle size={14} />
-                Module 5
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/results.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <AlertTriangle size={14} />
+                  Module 5
+                </div>
+                <h2 className="sq-lesson-title">When to Measure</h2>
+                <p className="sq-lesson-subtitle">Timing matters as much as technique</p>
               </div>
-              <h2 className="sq-lesson-title">When to Measure</h2>
-              <p className="sq-lesson-subtitle">Timing matters as much as technique</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-grid">
@@ -513,13 +575,15 @@ export default function SoundQuality101Page() {
             aria-label="Finding and fixing faults"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Cable size={14} />
-                Module 6
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/console.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Cable size={14} />
+                  Module 6
+                </div>
+                <h2 className="sq-lesson-title">Finding and Fixing Faults</h2>
+                <p className="sq-lesson-subtitle">A calm workflow for when things break</p>
               </div>
-              <h2 className="sq-lesson-title">Finding and Fixing Faults</h2>
-              <p className="sq-lesson-subtitle">A calm workflow for when things break</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-quote">

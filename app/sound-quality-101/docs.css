@@ -19,28 +19,35 @@
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 0.875rem 1.5rem;
-  background: color-mix(in srgb, var(--bg) 75%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.3s ease;
+  background: transparent;
+  border-bottom: none;
+}
+
+.sq-header-logo-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .sq-header-logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: transform 0.2s ease;
 }
 
 .sq-header-logo:hover {
-  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.sq-header-logo-img {
+  height: 34px;
+  width: auto;
+  display: block;
+  mix-blend-mode: difference;
 }
 
 .sq-header-actions {
@@ -49,6 +56,7 @@
   gap: 0.75rem;
 }
 
+.sq-header-btn,
 .sq-theme-toggle,
 .sq-home-btn {
   display: inline-flex;
@@ -62,8 +70,11 @@
   color: var(--text);
   cursor: pointer;
   transition: transform 0.15s ease, background 0.2s, border-color 0.2s, color 0.2s;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
+.sq-header-btn:hover,
 .sq-theme-toggle:hover,
 .sq-home-btn:hover {
   transform: scale(1.08);
@@ -72,6 +83,7 @@
   color: var(--accent);
 }
 
+.sq-header-btn:active,
 .sq-theme-toggle:active,
 .sq-home-btn:active {
   transform: scale(0.94);
@@ -241,12 +253,39 @@
   opacity: 1;
 }
 
-.sq-lesson-header {
+.sq-lesson-hero {
   position: relative;
   z-index: 1;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   padding: 2.5rem;
+  background-size: cover;
+  background-position: center;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent 60%);
+  overflow: hidden;
+}
+
+.sq-lesson-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.sq-lesson-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 2;
+}
+
+.sq-lesson-hero-content {
+  position: relative;
+  z-index: 3;
 }
 
 .sq-lesson-number {
@@ -255,28 +294,32 @@
   gap: 0.5rem;
   padding: 0.4rem 1rem;
   border-radius: var(--r-full);
-  border: 1px solid var(--accent);
-  color: var(--accent);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 1rem;
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  background: rgba(0, 0, 0, 0.25);
+  width: fit-content;
 }
 
 .sq-lesson-title {
-  font-size: clamp(1.8rem, 4vw, 2.75rem);
-  font-weight: 700;
-  color: var(--text);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  color: #ffffff;
   margin-bottom: 0.5rem;
-  line-height: 1.1;
+  line-height: 1.05;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
 }
 
 .sq-lesson-subtitle {
-  font-size: 1.1rem;
-  color: var(--muted);
+  font-size: 1.15rem;
+  color: #ffffff;
   font-weight: 500;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.5);
+  opacity: 0.95;
 }
 
 .sq-lesson-body {
@@ -712,7 +755,11 @@
   .sq-section {
     padding: 2.5rem 1rem;
   }
-  .sq-lesson-header,
+  .sq-lesson-hero {
+    min-height: 260px;
+    padding: 1.5rem;
+  }
+
   .sq-lesson-body {
     padding: 1.5rem;
   }
@@ -733,7 +780,6 @@
 @media (prefers-reduced-motion: reduce) {
   .sq-hero-orb,
   .sq-animate,
-  .sq-tilt,
   .sq-haptic,
   .sq-nav-btn,
   .sq-hero-cta,
@@ -742,5 +788,54 @@
     animation: none;
     transition: none;
     transform: none;
+  }
+}
+
+/* Print / PDF export */
+@media print {
+  .sq-header,
+  .sq-nav,
+  .sq-keyboard-hint,
+  .sq-hero {
+    display: none !important;
+  }
+
+  .sq-tutorial {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .sq-section {
+    padding: 1rem 0;
+    max-width: none;
+  }
+
+  .sq-lesson-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    margin-bottom: 2rem;
+  }
+
+  .sq-lesson-hero {
+    min-height: 200px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sq-lesson-body {
+    padding: 1.5rem;
+  }
+
+  .sq-content-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid #eee;
+  }
+
+  .sq-mermaid {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }

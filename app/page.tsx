@@ -71,14 +71,9 @@ export default function LandingPage() {
                 Console
               </Link>
             ) : (
-              <>
-                <Link href="/login" className="landing-header-link">
-                  Sign In
-                </Link>
-                <Link href="/register" className="landing-btn landing-btn-primary landing-btn-sm">
-                  Get Started
-                </Link>
-              </>
+              <Link href="/login" className="landing-btn landing-btn-primary landing-btn-sm">
+                Sign In
+              </Link>
             )}
           </nav>
         </div>
@@ -108,15 +103,10 @@ export default function LandingPage() {
                   Open Console
                 </Link>
               ) : (
-                <>
-                  <Link href="/register" className="landing-btn landing-btn-primary">
-                    <Play size={18} />
-                    Get Started
-                  </Link>
-                  <Link href="/login" className="landing-btn landing-btn-ghost">
-                    Sign In
-                  </Link>
-                </>
+                <Link href="/login" className="landing-btn landing-btn-primary">
+                  <Play size={18} />
+                  Sign In
+                </Link>
               )}
             </div>
           </div>
@@ -198,16 +188,10 @@ export default function LandingPage() {
                   <ArrowRight size={16} />
                 </Link>
               ) : (
-                <>
-                  <Link href="/register" className="landing-btn landing-btn-primary">
-                    <Play size={18} />
-                    Create Account
-                  </Link>
-                  <p className="landing-console-sub">
-                    Already have an account?{" "}
-                    <Link href="/login">Sign in here</Link>
-                  </p>
-                </>
+                <Link href="/login" className="landing-btn landing-btn-primary">
+                  <Play size={18} />
+                  Sign In
+                </Link>
               )}
             </div>
           </div>

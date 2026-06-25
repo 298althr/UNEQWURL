@@ -186,18 +186,58 @@ export default function SoundFilesPage() {
   async function handleUpload() {
     if (!selectedFile || !uploadForm.title.trim()) { setStatusMsg("File and title required."); return; }
     setUploadingType(uploadType); setStatusMsg(null);
-    const payload = new FormData();
-    payload.append("file", selectedFile); payload.append("uploadType", uploadType);
-    payload.append("title", uploadForm.title.trim()); payload.append("artist", uploadForm.artist.trim());
-    if (uploadForm.album.trim()) payload.append("album", uploadForm.album.trim());
-    if (uploadForm.genre.trim()) payload.append("genre", uploadForm.genre.trim());
-    if (uploadForm.cover_image.trim()) payload.append("coverImage", uploadForm.cover_image.trim());
     try {
-      const res = await fetch("/api/uploads", { method: "POST", body: payload });
-      const data = await res.json();
-      if (!res.ok) setStatusMsg(data.error || "Upload failed.");
+      // Step 1: Get presigned upload URL from our API
+      const presignRes = await fetch("/api/uploads/presign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: selectedFile.name,
+          fileType: selectedFile.type,
+          fileSize: selectedFile.size,
+          uploadType,
+        }),
+      });
+      const presignData = await presignRes.json();
+      if (!presignRes.ok) { setStatusMsg(presignData.error || "Failed to get upload URL."); return; }
+
+      // Step 2: Upload directly to B2
+      const b2Res = await fetch(presignData.uploadUrl, {
+        method: "POST",
+        headers: {
+          "Authorization": presignData.uploadAuthToken,
+          "X-Bz-File-Name": encodeURIComponent(presignData.b2FileName),
+          "Content-Type": selectedFile.type || "audio/mpeg",
+          "X-Bz-Content-Sha1": "do_not_verify",
+          "X-Bz-Info-upload-type": uploadType,
+        },
+        body: selectedFile,
+      });
+      const b2Data = await b2Res.json();
+      if (!b2Res.ok) { setStatusMsg(`B2 upload failed: ${b2Data.message || b2Res.statusText}`); return; }
+
+      // Step 3: Save metadata to database
+      const completeRes = await fetch("/api/uploads/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          b2FileName: b2Data.fileName,
+          b2FileId: b2Data.fileId,
+          originalFilename: selectedFile.name,
+          uploadType,
+          title: uploadForm.title.trim(),
+          artist: uploadForm.artist.trim(),
+          album: uploadForm.album.trim(),
+          genre: uploadForm.genre.trim(),
+          coverImage: uploadForm.cover_image.trim(),
+          fileSize: selectedFile.size,
+          mimeType: selectedFile.type || "audio/mpeg",
+        }),
+      });
+      const completeData = await completeRes.json();
+      if (!completeRes.ok) { setStatusMsg(completeData.error || "Failed to save upload."); }
       else { setStatusMsg("Uploaded successfully!"); setSelectedFile(null); setUploadForm({ title: "", artist: "", album: "", genre: "", cover_image: "" }); fetchTracks(); }
-    } catch { setStatusMsg("Upload failed."); }
+    } catch (err: any) { setStatusMsg(`Upload failed: ${err?.message || "Unknown error"}`); }
     finally { setUploadingType(null); if (fileInputRef.current) fileInputRef.current.value = ""; }
   }
 

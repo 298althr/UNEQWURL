@@ -150,31 +150,60 @@ export default function UploadsPage() {
     setUploadingType(type);
     setStatusMsg(null);
 
-    const payload = new FormData();
-    payload.append("file", file);
-    payload.append("uploadType", type);
-    payload.append("title", meta.title.trim());
-    payload.append("artist", meta.artist.trim());
-    if (meta.album.trim()) payload.append("album", meta.album.trim());
-    if (meta.genre.trim()) payload.append("genre", meta.genre.trim());
-    if (meta.cover_image.trim()) payload.append("coverImage", meta.cover_image.trim());
-
     try {
-      const res = await fetch("/api/uploads", {
+      // Step 1: Get presigned upload URL
+      const presignRes = await fetch("/api/uploads/presign", {
         method: "POST",
-        body: payload,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: file.name, fileType: file.type, fileSize: file.size, uploadType: type }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setStatusMsg(data.error || "Upload failed.");
+      const presignData = await presignRes.json();
+      if (!presignRes.ok) { setStatusMsg(presignData.error || "Failed to get upload URL."); return; }
+
+      // Step 2: Upload directly to B2
+      const b2Res = await fetch(presignData.uploadUrl, {
+        method: "POST",
+        headers: {
+          "Authorization": presignData.uploadAuthToken,
+          "X-Bz-File-Name": encodeURIComponent(presignData.b2FileName),
+          "Content-Type": file.type || "audio/mpeg",
+          "X-Bz-Content-Sha1": "do_not_verify",
+          "X-Bz-Info-upload-type": type,
+        },
+        body: file,
+      });
+      const b2Data = await b2Res.json();
+      if (!b2Res.ok) { setStatusMsg(`B2 upload failed: ${b2Data.message || b2Res.statusText}`); return; }
+
+      // Step 3: Save metadata to database
+      const completeRes = await fetch("/api/uploads/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          b2FileName: b2Data.fileName,
+          b2FileId: b2Data.fileId,
+          originalFilename: file.name,
+          uploadType: type,
+          title: meta.title.trim(),
+          artist: meta.artist.trim(),
+          album: meta.album.trim(),
+          genre: meta.genre.trim(),
+          coverImage: meta.cover_image.trim(),
+          fileSize: file.size,
+          mimeType: file.type || "audio/mpeg",
+        }),
+      });
+      const completeData = await completeRes.json();
+      if (!completeRes.ok) {
+        setStatusMsg(completeData.error || "Upload failed.");
       } else {
         setStatusMsg(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully!`);
         setSelectedFiles((prev) => ({ ...prev, [type]: null }));
         setFormData((prev) => ({ ...prev, [type]: { title: "", artist: "", album: "", genre: "", cover_image: "" } }));
         fetchUploads();
       }
-    } catch {
-      setStatusMsg("Upload failed. Please try again.");
+    } catch (err: any) {
+      setStatusMsg(`Upload failed: ${err?.message || "Please try again."}`);
     } finally {
       setUploadingType(null);
       const input = fileInputRefs.current[type];

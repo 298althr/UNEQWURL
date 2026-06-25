@@ -121,6 +121,17 @@ export async function uploadFile(
   return { fileName: data.fileName, fileId: data.fileId };
 }
 
+export async function getPresignedUpload(
+  userId: string,
+  uploadType: string,
+  fileName: string
+): Promise<{ uploadUrl: string; uploadAuthToken: string; b2FileName: string }> {
+  await ensureAuth();
+  const { uploadUrl, uploadAuthToken } = await getUploadUrl();
+  const b2FileName = `${userPrefix(userId)}/${uploadType}_${Date.now()}_${fileName}`;
+  return { uploadUrl, uploadAuthToken, b2FileName };
+}
+
 export async function deleteFile(fileName: string, fileId: string): Promise<void> {
   await ensureAuth();
   await getB2().deleteFileVersion({ fileName, fileId });

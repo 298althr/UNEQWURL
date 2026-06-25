@@ -111,21 +111,17 @@ export default function ConsolePage() {
 
       {/* Category Cards */}
       <section className="px-4 pb-6">
-        <div className="section-label mb-3">Select a Track Category</div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {CATEGORIES.map(cat => {
-            const count = tracksByType(cat.id).length;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => openPicker(cat.id)}
-                className="console-category-card group relative overflow-hidden rounded-2xl border border-border transition-all hover:scale-[1.02] hover:border-transparent"
-                style={{ "--card-color": cat.colorValue } as React.CSSProperties}
-              >
-                <div className="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" style={{ backgroundImage: `url(${cat.photo})` }} />
-              </button>
-            );
-          })}
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => openPicker(cat.id)}
+              className="rounded-2xl overflow-hidden"
+              style={{ height: 200 }}
+            >
+              <img src={cat.photo} alt={cat.label} className="w-full h-full object-cover" />
+            </button>
+          ))}
         </div>
       </section>
 

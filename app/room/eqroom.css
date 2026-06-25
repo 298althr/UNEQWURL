@@ -3327,12 +3327,28 @@ html[data-density="compact"] .fx-module {
 }
 
 /* ============================================================
-   LIGHT MODE — accent CTA buttons get black text
+   LIGHT MODE — EQ room accent buttons: white fill, accent outline, black text
    ============================================================ */
-html[data-theme="light"] .preset-pill.active,
-html[data-theme="light"] .preset-save-btn,
-html[data-theme="light"] .eq-toggle-btn.active,
-html[data-theme="light"] .lesson-mode-btn.active,
-html[data-theme="light"] .lesson-float-step-pill {
+html[data-theme="light"] .room-page .btn-primary,
+html[data-theme="light"] .room-page .btn-secondary,
+html[data-theme="light"] .room-page .preset-pill.active,
+html[data-theme="light"] .room-page .preset-save-btn,
+html[data-theme="light"] .room-page .eq-toggle-btn.active,
+html[data-theme="light"] .room-page .lesson-mode-btn.active,
+html[data-theme="light"] .room-page .lesson-float-step-pill {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid var(--accent) !important;
+  color: #000000 !important;
+}
+
+html[data-theme="light"] .room-page .btn-primary:hover,
+html[data-theme="light"] .room-page .btn-secondary:hover,
+html[data-theme="light"] .room-page .preset-pill.active:hover,
+html[data-theme="light"] .room-page .preset-save-btn:hover,
+html[data-theme="light"] .room-page .eq-toggle-btn.active:hover,
+html[data-theme="light"] .room-page .lesson-mode-btn.active:hover,
+html[data-theme="light"] .room-page .lesson-float-step-pill:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border-color: var(--accent) !important;
   color: #000000 !important;
 }

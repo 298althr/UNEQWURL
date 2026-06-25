@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "UNEQWURL",
   "short_name": "UNEQWURL",
   "description": "Audio Enhancement Studio — Hear what better audio sounds like.",
@@ -9,10 +9,22 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "categories": ["music", "productivity", "education"]

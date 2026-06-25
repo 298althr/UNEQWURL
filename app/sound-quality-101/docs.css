@@ -122,8 +122,33 @@ html[data-theme="light"] .sq-header {
   background:
     radial-gradient(ellipse at 50% 0%, var(--bg-glow-primary) 0%, transparent 55%),
     radial-gradient(ellipse at 80% 80%, var(--bg-glow-secondary) 0%, transparent 45%),
-    radial-gradient(ellipse at 20% 60%, var(--bg-glow-tertiary) 0%, transparent 40%),
-    linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+    radial-gradient(ellipse at 20% 60%, var(--bg-glow-tertiary) 0%, transparent 40%);
+}
+
+.sq-hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url(/assets/hero/sound-quality-bg.jpg) no-repeat center center / cover;
+  opacity: 1;
+}
+
+.sq-hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.65) 100%);
+  pointer-events: none;
+}
+
+html[data-theme="light"] .sq-hero-bg::before {
+  opacity: 0.4;
+}
+
+html[data-theme="light"] .sq-hero-bg::after {
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(255, 255, 255, 0.55) 100%);
 }
 
 .sq-hero-grid {

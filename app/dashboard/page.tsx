@@ -103,7 +103,7 @@ export default function SongsPage() {
         ...songs.map((song: any) => ({
           ...song,
           source: "upload",
-          upload_type: "music",
+          upload_type: song.upload_type || "music",
           artist: song.artist || "Unknown Artist",
           file_size_bytes: 0,
           cover_image: null,

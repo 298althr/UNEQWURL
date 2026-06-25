@@ -119,12 +119,11 @@ export default function SoundFilesPage() {
       const sData = sRes.ok ? await sRes.json() : [];
       
       // Merge user uploads with admin/default songs
-      // Admin songs are treated as 'music' type by default
       const merged = [
         ...sData.map((s: any) => ({
           ...s,
           source: "upload",
-          upload_type: "music",
+          upload_type: s.upload_type || "music",
           artist: s.artist || "Unknown Artist",
           b2_file_name: s.file_url.split('/').pop(),
           file_size_bytes: 0,

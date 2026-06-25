@@ -12,7 +12,7 @@ export async function GET() {
 
   const rows = await getCached<SongListItem[]>(`songs:list`, 30000, async () => {
     const { rows } = await query<SongListItem>(
-      `select id, title, artist, file_url, duration_seconds
+      `select id, title, artist, file_url, duration_seconds, category as upload_type
        from songs
        where analysis_status = 'ready'
        order by title asc`

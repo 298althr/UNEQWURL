@@ -12,6 +12,7 @@ export async function GET() {
 
   const { rows } = await query<SongAdmin>(
     `select id, title, artist, file_url, duration_seconds,
+            bpm, musical_key,
             benchmark_settings, benchmark_weights, benchmark_ready, analysis_status, probe_data
      from songs
      order by title asc`

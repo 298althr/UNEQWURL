@@ -19,6 +19,8 @@ export type AdminUpload = {
   file_size_bytes: number;
   mime_type: string;
   duration_seconds: number | null;
+  bpm: number | null;
+  musical_key: string | null;
   uploaded_at: string;
 };
 
@@ -45,6 +47,8 @@ export async function GET() {
        up.file_size_bytes,
        up.mime_type,
        up.duration_seconds,
+       up.bpm,
+       up.musical_key,
        up.uploaded_at
      from user_uploads up
      join users u on u.id = up.user_id

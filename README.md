@@ -74,5 +74,5 @@ All sliders range from **-12 dB to +12 dB**. The UNEQWURL band steps in **0.5 dB
 
 ## Links
 
-- [Live App](https://uneqwerl.vercel.app)
-- [Console Guide](https://uneqwerl.vercel.app/docs/console-guide)
+- [Live App](https://uneqwurl.vercel.app)
+- [Console Guide](https://uneqwurl.vercel.app/docs/console-guide)

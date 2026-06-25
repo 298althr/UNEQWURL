@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Home,
   Play,
+  SlidersHorizontal,
   Volume2,
   Music,
   Mic,
@@ -247,7 +248,11 @@ export default function SoundQuality101Page() {
           />
           <div
             className="sq-hero-orb"
-            style={{ width: 320, height: 320, bottom: "15%", right: "10%", background: "var(--purple)", animationDelay: "-6s" }}
+            style={{ width: 320, height: 320, bottom: "15%", right: "10%", background: "#00a6ff", animationDelay: "-6s" }}
+          />
+          <div
+            className="sq-hero-orb"
+            style={{ width: 260, height: 260, bottom: "35%", left: "10%", background: "#ff0056", animationDelay: "-12s" }}
           />
           <div className="sq-hero-content">
             <motion.div
@@ -283,17 +288,29 @@ export default function SoundQuality101Page() {
             >
               Learn what to measure, how to measure it, and how to fix problems when they show up.
             </motion.p>
-            <motion.a
-              href="#what-is-sound-quality"
-              className="sq-hero-cta sq-haptic sq-focusable"
+            <motion.div
+              className="sq-hero-cta-row"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.55, duration: 0.5 }}
-              onClick={() => haptic(10)}
             >
-              <Play size={18} />
-              Start Learning
-            </motion.a>
+              <Link
+                href="#what-is-sound-quality"
+                className="sq-hero-cta sq-hero-cta-primary sq-haptic sq-focusable"
+                onClick={() => haptic(10)}
+              >
+                <Play size={18} />
+                Start Learning
+              </Link>
+              <Link
+                href="/console"
+                className="sq-hero-cta sq-hero-cta-console sq-haptic sq-focusable"
+                onClick={() => haptic(10)}
+              >
+                <SlidersHorizontal size={18} />
+                Go to Console
+              </Link>
+            </motion.div>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

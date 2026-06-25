@@ -123,20 +123,6 @@ export default function ConsolePage() {
                 style={{ "--card-color": cat.colorValue } as React.CSSProperties}
               >
                 <div className="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110" style={{ backgroundImage: `url(${cat.photo})` }} />
-                <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%)` }} />
-                <div className="relative z-[2] p-5 flex flex-col items-center justify-end min-h-[180px]">
-                  <div className="console-card-icon mb-3" style={{ color: cat.colorValue }}>
-                    {CATEGORY_ICONS[cat.id]}
-                  </div>
-                  <div className="text-base font-bold text-white">{cat.label}</div>
-                  <div className="text-[11px] text-white/70 mt-0.5">
-                    {loading ? "Loading..." : `${count} track${count === 1 ? "" : "s"}`}
-                  </div>
-                  <div className="console-card-cta mt-3 flex items-center gap-1.5 text-[12px] font-semibold" style={{ color: cat.colorValue }}>
-                    <SlidersHorizontal size={14} />
-                    Open Console
-                  </div>
-                </div>
               </button>
             );
           })}

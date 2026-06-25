@@ -4185,15 +4185,15 @@ html[data-theme="light"] .danger-zone-card {
    UNIFIED PAGE HERO — photo background for all dashboard pages
    ============================================================ */
 .page-hero-bg {
-  opacity: 0.5;
-  filter: blur(15px);
+  opacity: 1;
+  filter: none;
 }
 .page-hero-overlay {
   background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.40) 100%);
 }
 html[data-theme="light"] .page-hero-bg {
   opacity: 1 !important;
-  filter: blur(5px) !important;
+  filter: none !important;
 }
 html[data-theme="light"] .page-hero-overlay {
   background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 100%) !important;

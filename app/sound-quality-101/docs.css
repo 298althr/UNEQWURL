@@ -577,57 +577,6 @@
   border-left: 4px solid var(--accent);
 }
 
-.sq-instructor-card {
-  border-left: 4px solid var(--purple);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--purple) 5%, transparent), transparent 60%);
-}
-
-.sq-instructor-card .sq-lesson-header {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--purple) 8%, transparent), transparent 60%);
-}
-
-.sq-lock-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--r-full);
-  border: 1px solid var(--purple);
-  color: var(--purple);
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 1rem;
-  background: color-mix(in srgb, var(--purple) 8%, transparent);
-}
-
-/* Glossary */
-.sq-glossary-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-.sq-glossary-item {
-  padding: 1rem 1.25rem;
-  border-radius: var(--r-md);
-  background: var(--track-bg);
-  border: 1px solid var(--track-border);
-}
-
-.sq-glossary-item strong {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.sq-glossary-item p {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin-top: 0.25rem;
-}
-
 /* Floating navigation */
 .sq-nav {
   position: fixed;
@@ -714,13 +663,6 @@
 
 .sq-animate {
   animation: sq-fade-up 0.7s ease forwards;
-}
-
-/* 3D tilt effect */
-.sq-tilt {
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease-out;
-  will-change: transform;
 }
 
 /* Keyboard hint */

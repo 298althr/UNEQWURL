@@ -17,7 +17,6 @@ import {
   AlertTriangle,
   Activity,
   BookOpen,
-  Lock,
   ArrowDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -88,7 +87,7 @@ function haptic(ms = 5) {
   }
 }
 
-const sectionIds = ["lesson-1", "lesson-2", "lesson-3", "lesson-4", "lesson-5", "lesson-6", "troubleshooting", "instructor"];
+const sectionIds = ["what-is-sound-quality", "factors-influencing", "metrics", "how-to-measure", "when-to-measure", "finding-faults"];
 
 export default function SoundQuality101Page() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
@@ -206,7 +205,7 @@ export default function SoundQuality101Page() {
               transition={{ duration: 0.6 }}
             >
               <BookOpen size={14} />
-              Tutorial
+              Sound Management Training
             </motion.div>
             <motion.h1
               className="sq-hero-title"
@@ -222,7 +221,7 @@ export default function SoundQuality101Page() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.7 }}
             >
-              The Real-World Survival Guide to Live Sound
+              A practical guide for people moving into sound management
             </motion.p>
             <motion.p
               className="sq-hero-subtitle"
@@ -230,10 +229,10 @@ export default function SoundQuality101Page() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35, duration: 0.7 }}
             >
-              No fluff. No heavy math. Just what actually works when you're behind the mixing board.
+              Learn what to measure, how to measure it, and how to fix problems when they show up.
             </motion.p>
             <motion.a
-              href="#lesson-1"
+              href="#what-is-sound-quality"
               className="sq-hero-cta sq-haptic sq-focusable"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -255,484 +254,313 @@ export default function SoundQuality101Page() {
         </section>
 
         <div className="sq-section">
-          {/* Lesson 1 */}
+          {/* Section 1: What is Sound Quality? */}
           <motion.article
-            id="lesson-1"
+            id="what-is-sound-quality"
             className="sq-lesson-card"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             tabIndex={0}
-            aria-label="Lesson 1: Your ears are liars"
+            aria-label="What is sound quality?"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-header">
               <div className="sq-lesson-number">
                 <Volume2 size={14} />
-                Lesson 1
+                Module 1
               </div>
-              <h2 className="sq-lesson-title">Your Ears Are Liars</h2>
-              <p className="sq-lesson-subtitle">Perception &amp; Volume</p>
+              <h2 className="sq-lesson-title">What is Sound Quality?</h2>
+              <p className="sq-lesson-subtitle">The goal: clear, balanced, safe sound</p>
             </div>
             <div className="sq-lesson-body">
+              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
+                Sound quality is not just about making things loud. Good sound quality means your audience can hear every word, every instrument, and every detail clearly — without pain, distortion, or fatigue.
+              </p>
               <div className="sq-grid">
                 <div className="sq-content-block">
-                  <h4>The Volume Trick</h4>
+                  <h4>Four Pillars of Sound Quality</h4>
                   <ul>
-                    <li><strong>The Hard Truth:</strong> Our ears don't hear bass or treble very well when the music is quiet. But we are incredibly sensitive to the 2–5 kHz range (where vocals and harsh cymbals live).</li>
-                    <li><strong>Pro Move:</strong> Never finalize your mix at a quiet whisper. A mix that sounds "perfect" at quiet rehearsal volumes will sound harsh and thin when the venue is packed and loud. Always evaluate your EQ at the actual show volume.</li>
+                    <li><strong>Clarity:</strong> Can you understand speech and pick out individual instruments?</li>
+                    <li><strong>Balance:</strong> Do all the frequencies work together, or is one range overpowering the rest?</li>
+                    <li><strong>Consistency:</strong> Does the sound stay good from the front row to the back row?</li>
+                    <li><strong>Safety:</strong> Is the volume loud enough to feel exciting, but not loud enough to damage hearing?</li>
                   </ul>
                 </div>
                 <div className="sq-content-block">
-                  <h4>The Distance Drop-Off</h4>
-                  <p>Sound loses energy fast as it travels. Here is the golden rule of speaker placement (the Inverse-Square Law):</p>
-                  <div className="sq-table-responsive">
-                    <table className="sq-table">
-                      <thead>
-                        <tr><th>Moving away from the speaker</th><th>What happens to the volume?</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>You step twice as far away</td><td>It drops by −6 dB (noticeably quieter)</td></tr>
-                        <tr><td>You step halfway closer</td><td>It jumps up by +6 dB (way louder)</td></tr>
-                      </tbody>
-                    </table>
+                  <h4>Your Ears Are Biased</h4>
+                  <p>Human ears are most sensitive to the 2–5 kHz range. When you turn the volume down, bass and treble seem to disappear. When you turn it up, the same mix can sound harsh. This means you cannot trust your ears alone.</p>
+                  <div className="sq-demo-box">
+                    <h5><Play size={14} /> Try This</h5>
+                    <p>Play a track at low volume and boost 3–5 kHz. It will suddenly feel much louder, even though the actual volume meter has barely moved.</p>
                   </div>
                 </div>
-              </div>
-              <div className="sq-demo-box">
-                <h5><Play size={14} /> Try It Out (2 mins)</h5>
-                <p>Go to the 298EQ frequency sweeper. Boost the 3–5 kHz knob. Notice how the track instantly sounds way louder to your ears, even though the electrical volume meter hasn't moved at all? That's your brain playing tricks on you.</p>
               </div>
             </div>
           </motion.article>
 
-          {/* Lesson 2 */}
+          {/* Section 2: What Affects Sound Quality? */}
           <motion.article
-            id="lesson-2"
+            id="factors-influencing"
             className="sq-lesson-card"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="Lesson 2: Dealing with echoey rooms"
+            aria-label="What affects sound quality?"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-header">
               <div className="sq-lesson-number">
                 <Music size={14} />
-                Lesson 2
+                Module 2
               </div>
-              <h2 className="sq-lesson-title">Dealing with Echoey Rooms</h2>
-              <p className="sq-lesson-subtitle">The "Meat-Bag" Effect</p>
+              <h2 className="sq-lesson-title">What Affects Sound Quality?</h2>
+              <p className="sq-lesson-subtitle">The environment, the gear, and the operator</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-grid">
                 <div className="sq-content-block">
-                  <h4>Why Soundcheck Always Sounds Bad</h4>
-                  <p>An empty room is essentially a giant echo chamber. Sound bounces off concrete and glass, creating a muddy mess. But human bodies act as giant, squishy sound absorbers. When the crowd arrives, they suck up that echo. Your mix will naturally tighten up once the room is full.</p>
+                  <h4>The Room</h4>
+                  <p>Empty rooms with hard walls echo. People absorb sound. A rehearsal with an empty room will sound muddy; once the audience arrives, the same mix will sound tighter.</p>
                 </div>
                 <div className="sq-content-block">
-                  <h4>What Eats the Most Sound?</h4>
-                  <div className="sq-table-responsive">
-                    <table className="sq-table">
-                      <thead>
-                        <tr><th>Stuff in the Room</th><th>Absorption (0 = none, 1 = total)</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>A human being sitting down</td><td>High (0.3–0.6) — Great for absorbing mud!</td></tr>
-                        <tr><td>Thick theater curtains</td><td>High (0.5–0.7) — Tames harsh reflections</td></tr>
-                        <tr><td>Painted concrete walls</td><td>Terrrible (0.01) — This is why gymnasiums sound awful</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  <h4>Distance</h4>
+                  <p>Every time you double the distance from a speaker, the sound drops by about 6 dB. Place speakers for the audience, not for the walls.</p>
                 </div>
               </div>
-              <div className="sq-demo-box">
-                <h5><Play size={14} /> Try It Out (3 mins)</h5>
-                <p>Want to simulate what happens when the crowd walks in? Take your EQ and pull down 200–500 Hz (the mud), and boost 2–4 kHz (the clarity). That's exactly what an audience does to a room naturally.</p>
+              <div className="sq-grid" style={{ marginTop: "1rem" }}>
+                <div className="sq-content-block">
+                  <h4>Microphones & Feedback</h4>
+                  <p>When a microphone hears its own speaker, you get the loud squeal called feedback. Keep microphones behind the speakers and use high-pass filters on vocals.</p>
+                </div>
+                <div className="sq-content-block">
+                  <h4>Cables & Signal Chain</h4>
+                  <p>A broken cable or an unbalanced cable run too long can add hum, hiss, or radio noise. The weakest link in the chain sets the quality ceiling.</p>
+                </div>
               </div>
             </div>
           </motion.article>
 
-          {/* Lesson 3 */}
+          {/* Section 3: Metrics That Matter */}
           <motion.article
-            id="lesson-3"
+            id="metrics"
             className="sq-lesson-card"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="Lesson 3: Stopping feedback and stage bleed"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Mic size={14} />
-                Lesson 3
-              </div>
-              <h2 className="sq-lesson-title">Stopping Feedback &amp; Stage Bleed</h2>
-              <p className="sq-lesson-subtitle">Controlling the Mess</p>
-            </div>
-            <div className="sq-lesson-body">
-              <div className="sq-grid">
-                <div className="sq-content-block">
-                  <h4>Controlling the Mess</h4>
-                  <ul>
-                    <li><strong>The Problem:</strong> Sound from the main speakers naturally wraps backward and spills onto the stage. Mics pick this up, causing muddy sound and screaming feedback.</li>
-                    <li><strong>The Fix:</strong> Point your speakers carefully. Put stage wedges in the "blind spot" (the back) of your microphones. Use high-pass filters (HPF) on vocal mics to cut out low-end stage rumble.</li>
-                  </ul>
-                </div>
-                <div className="sq-content-block">
-                  <h4>The Subwoofer Trick</h4>
-                  <p>Putting two subwoofers right next to each other gives you a free +3 dB volume boost because they couple together. Spacing them too far apart just creates weird dead zones in the audience.</p>
-                </div>
-              </div>
-              <h4>How Feedback Actually Happens</h4>
-              <div className="sq-flow">
-                <div className="sq-flow-node">Singer's Mic</div>
-                <div className="sq-flow-arrow" />
-                <div className="sq-flow-node">Mixer</div>
-                <div className="sq-flow-arrow" />
-                <div className="sq-flow-node success">Main Speakers</div>
-                <div className="sq-flow-arrow" />
-                <div className="sq-flow-node warning">Sound spills backward onto stage</div>
-                <div className="sq-flow-arrow" />
-                <div className="sq-flow-node" style={{ borderColor: "var(--red)", color: "var(--red)" }}>Mic hears the speaker and squeals!</div>
-              </div>
-              <div className="sq-demo-box">
-                <h5><Play size={14} /> Try It Out (5 mins)</h5>
-                <p>Put a high-pass filter (HPF) on a vocal track. Next, use a narrow EQ cut between 250–400 Hz. Listen to how all that gross, muddy stage wash just disappears, leaving the voice crystal clear.</p>
-              </div>
-            </div>
-          </motion.article>
-
-          {/* Lesson 4 */}
-          <motion.article
-            id="lesson-4"
-            className="sq-lesson-card"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="Lesson 4: Making words clear"
+            aria-label="Metrics that matter"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-header">
               <div className="sq-lesson-number">
                 <Activity size={14} />
-                Lesson 4
+                Module 3
               </div>
-              <h2 className="sq-lesson-title">Can Grandma Hear the Pastor?</h2>
-              <p className="sq-lesson-subtitle">Making Words Clear</p>
+              <h2 className="sq-lesson-title">Metrics That Matter</h2>
+              <p className="sq-lesson-subtitle">Numbers that describe what you hear</p>
             </div>
             <div className="sq-lesson-body">
-              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                Nobody cares how fat the kick drum sounds if they can't understand what the lead singer or speaker is saying. Intelligibility is your #1 job.
-              </p>
               <div className="sq-table-responsive">
                 <table className="sq-table">
                   <thead>
-                    <tr><th>What We Measure</th><th>What It Actually Means</th><th>The Goal</th></tr>
+                    <tr><th>Metric</th><th>What it tells you</th><th>Target</th></tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><strong>Speech Clarity (STI)</strong></td>
+                      <td><strong>STI</strong> (Speech Transmission Index)</td>
                       <td>How easy it is to understand spoken words.</td>
-                      <td>Score a 0.6 or higher. Anything less sounds like a school teacher.</td>
+                      <td>≥ 0.6 is good</td>
                     </tr>
                     <tr>
-                      <td><strong>Musical Definition (C80)</strong></td>
-                      <td>Can you hear the individual instruments, or is it a wall of mush?</td>
-                      <td>Keep it above 0 dB so fast notes don't blur together.</td>
+                      <td><strong>C80</strong> (Clarity Index)</td>
+                      <td>How clearly instruments and fast notes are separated.</td>
+                      <td>Above 0 dB</td>
                     </tr>
                     <tr>
-                      <td><strong>Crowd Safety (SPL)</strong></td>
-                      <td>Are you deafening the audience?</td>
-                      <td>Keep the average volume between 82–95 dB. Prolonged blasts over 100 dB physically damage hearing. Don't be that guy.</td>
+                      <td><strong>SPL</strong> (Sound Pressure Level)</td>
+                      <td>How loud the sound is in decibels.</td>
+                      <td>Average 82–95 dB for safety</td>
+                    </tr>
+                    <tr>
+                      <td><strong>RT60</strong> (Reverb Time)</td>
+                      <td>How long sound takes to fade in a room.</td>
+                      <td>Shorter for speech, longer for music</td>
+                    </tr>
+                    <tr>
+                      <td><strong>LUFS</strong> (Loudness Units)</td>
+                      <td>Perceived loudness adjusted for human hearing.</td>
+                      <td>Target around -14 LUFS for streaming</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Frequency Response</strong></td>
+                      <td>Balance of bass, mids, and treble.</td>
+                      <td>Smooth, no huge spikes or dips</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div className="sq-demo-box">
-                <h5><Play size={14} /> Try It Out (4 mins)</h5>
-                <p>To make vocals punch through a dense mix without just turning up the volume: Cut the "boxiness" at 200–400 Hz, add some bite at 2–3 kHz, and pull down 5–8 kHz a tiny bit so the "S" sounds don't rip people's ears off.</p>
+                <h5><Play size={14} /> Try This</h5>
+                <p>Open the 298EQ analyzer and play a reference track. Look at the frequency curve. Your goal is to make your live mix follow the same general shape, without big peaks or holes.</p>
               </div>
             </div>
           </motion.article>
 
-          {/* Lesson 5 */}
+          {/* Section 4: How to Measure */}
           <motion.article
-            id="lesson-5"
+            id="how-to-measure"
             className="sq-lesson-card"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="Lesson 5: The pre-show checklist"
+            aria-label="How to measure sound quality"
+          >
+            <div className="sq-lesson-glow" />
+            <div className="sq-lesson-header">
+              <div className="sq-lesson-number">
+                <Mic size={14} />
+                Module 4
+              </div>
+              <h2 className="sq-lesson-title">How to Measure Sound Quality</h2>
+              <p className="sq-lesson-subtitle">Use your ears, plus the right tools</p>
+            </div>
+            <div className="sq-lesson-body">
+              <div className="sq-grid">
+                <div className="sq-content-block">
+                  <h4>Step 1: Reference Track</h4>
+                  <p>Play a song you know well through the PA. It gives you a baseline for how the room should sound. If the reference sounds muddy, the room is muddy. If it sounds harsh, your EQ or speaker placement is wrong.</p>
+                </div>
+                <div className="sq-content-block">
+                  <h4>Step 2: Decibel Meter</h4>
+                  <p>Use a handheld SPL meter or a phone app to check volume at the mix position and at the back of the room. Aim for an average of 82–95 dB. Anything above 100 dB for long periods damages hearing.</p>
+                </div>
+              </div>
+              <div className="sq-grid" style={{ marginTop: "1rem" }}>
+                <div className="sq-content-block">
+                  <h4>Step 3: Real-Time Analyzer</h4>
+                  <p>An RTA shows the frequency balance in real time. Look for problem frequencies: too much energy around 200–500 Hz means mud; a sharp spike around 2–5 kHz means harshness.</p>
+                </div>
+                <div className="sq-content-block">
+                  <h4>Step 4: Listen at Show Volume</h4>
+                  <p>Always do your final check at the volume the audience will actually hear. A mix that sounds balanced at low volume will often sound thin or harsh at show volume.</p>
+                </div>
+              </div>
+            </div>
+          </motion.article>
+
+          {/* Section 5: When to Measure */}
+          <motion.article
+            id="when-to-measure"
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
+            tabIndex={0}
+            aria-label="When to measure sound quality"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-header">
               <div className="sq-lesson-number">
                 <AlertTriangle size={14} />
-                Lesson 5
+                Module 5
               </div>
-              <h2 className="sq-lesson-title">The "Don't Get Fired" Pre-Show Checklist</h2>
-              <p className="sq-lesson-subtitle">Before the band walks on stage</p>
+              <h2 className="sq-lesson-title">When to Measure</h2>
+              <p className="sq-lesson-subtitle">Timing matters as much as technique</p>
             </div>
             <div className="sq-lesson-body">
-              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                Before the band even walks on stage, professional engineers do these four things every single time:
-              </p>
               <div className="sq-grid">
                 <div className="sq-content-block">
-                  <h4>The Checklist</h4>
-                  <ul>
-                    <li><strong>Leave Breathing Room:</strong> Keep at least 6 dB of headroom on your master fader. No red lights. Red lights mean distortion.</li>
-                    <li><strong>Clear the Runway for Vocals:</strong> Ensure the 1–4 kHz range is clear for the singer. Don't let guitars or keyboards step all over it.</li>
-                    <li><strong>Tame the Low End:</strong> Keep the 200–500 Hz mud under control. Make sure your subwoofers are in phase (working together, not fighting each other).</li>
-                    <li><strong>Play Your Favorite Song:</strong> Play a professionally mixed track you know perfectly before the show starts. Use it to hear how the room is behaving today.</li>
-                  </ul>
+                  <h4>Before Soundcheck</h4>
+                  <p>Power on every speaker, amp, and mixer channel. Play a reference track and walk the room. Fix any dead zones, rattles, or obvious hums before the band arrives.</p>
                 </div>
                 <div className="sq-content-block">
-                  <h4>System Verification Demo (3 mins)</h4>
-                  <p>Run a short track through the 298EQ analyzer. Try to make your live mix match the general shape of your reference track. Keep an eye on your meters to make sure you aren't squashing the life out of the music.</p>
+                  <h4>During Soundcheck</h4>
+                  <p>Set gain levels so each channel has a strong, clean signal. Check that the vocal range (1–4 kHz) is clear and that the low end (200–500 Hz) is not muddy.</p>
+                </div>
+              </div>
+              <div className="sq-grid" style={{ marginTop: "1rem" }}>
+                <div className="sq-content-block">
+                  <h4>Before the Show</h4>
+                  <p>Play your reference track one more time. Confirm the master fader has at least 6 dB of headroom. No red lights. Then lock the main settings.</p>
+                </div>
+                <div className="sq-content-block">
+                  <h4>During the Show</h4>
+                  <p>Watch the meters and walk the room if possible. Adjust only small changes. If it suddenly sounds bad, mute channels one by one to find the problem.</p>
                 </div>
               </div>
             </div>
           </motion.article>
 
-          {/* Lesson 6 */}
-          <motion.article
-            id="lesson-6"
-            className="sq-lesson-card"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="Lesson 6: Cables, routing and realistic limits"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lesson-number">
-                <Cable size={14} />
-                Lesson 6
-              </div>
-              <h2 className="sq-lesson-title">The Missing Link: Cables, Routing &amp; Realistic Limits</h2>
-              <p className="sq-lesson-subtitle">Physical connections matter as much as digital ones</p>
-            </div>
-            <div className="sq-lesson-body">
-              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                A $100,000 speaker system sounds like absolute garbage if you plug it in with a broken $5 cable. The physical connections are just as important as the digital ones.
-              </p>
-              <div className="sq-grid">
-                <div className="sq-content-block">
-                  <h4>Balanced vs. Unbalanced Cables</h4>
-                  <ul>
-                    <li><strong>Balanced (XLR, TRS):</strong> These cables have an extra wire inside that flips the signal to cancel out electrical noise. You can run an XLR cable 100 feet across a stage and it will stay perfectly quiet.</li>
-                    <li><strong>Unbalanced (TS, RCA):</strong> Common for electric guitars, keyboards, and consumer gear. They act like giant antennas for hum and radio interference. <strong>Never run an unbalanced cable longer than 15-20 feet.</strong> Use a DI (Direct Injection) box to convert them to balanced for long runs.</li>
-                  </ul>
-                </div>
-                <div className="sq-content-block">
-                  <h4>Cable Routing: Don't Cross the Streams</h4>
-                  <p>Power cables carry massive amounts of electricity that radiate invisible magnetic fields. If you run your delicate microphone cable right next to a thick extension cord, you will get a loud buzzing sound.</p>
-                  <div className="sq-quote">
-                    <strong>Rule of thumb:</strong> Keep audio cables and power cables separated. If they absolutely have to cross paths on the floor, cross them at a strict 90-degree angle (like a + sign). Never run them parallel to each other.
-                  </div>
-                </div>
-              </div>
-              <div className="sq-content-block" style={{ marginTop: "1rem" }}>
-                <h4>The Reality Check: Max Attainable Quality</h4>
-                <p>You cannot cheat physics. The quality of your mix is capped by the lowest-quality piece of gear in the chain. If you are mixing on a cheap 10-inch portable PA speaker, you will <strong>never</strong> get the earth-shaking sub-bass of an arena rig, no matter how hard you turn the bass knob up. Over-EQing small systems just causes them to distort and blow up.</p>
-                <p style={{ color: "var(--gold)", marginTop: "0.5rem" }}><strong>Pro Tip:</strong> Know the limits of the rig you are working on. Mix for clarity and safety first. Do not try to force a small system to do a giant system's job.</p>
-              </div>
-            </div>
-          </motion.article>
+          <div className="sq-divider">Troubleshooting Guide</div>
 
-          <div className="sq-divider">The Troubleshooting Cheat Sheet</div>
-
-          {/* Troubleshooting */}
+          {/* Section 6: Finding and Fixing Faults */}
           <motion.article
-            id="troubleshooting"
+            id="finding-faults"
             className="sq-lesson-card sq-bonus-card"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="Bonus: troubleshooting workflow"
+            aria-label="Finding and fixing faults"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-header">
               <div className="sq-lesson-number">
-                <AlertTriangle size={14} />
-                Bonus Section
+                <Cable size={14} />
+                Module 6
               </div>
-              <h2 className="sq-lesson-title">The "Oh Crap, Something is Broken" Workflow</h2>
-              <p className="sq-lesson-subtitle">A workflow for when things go wrong</p>
+              <h2 className="sq-lesson-title">Finding and Fixing Faults</h2>
+              <p className="sq-lesson-subtitle">A calm workflow for when things break</p>
             </div>
             <div className="sq-lesson-body">
               <div className="sq-quote">
-                <strong>The Golden Rule of Troubleshooting:</strong> Never just slap an EQ on a problem. Follow the cable. Figure out exactly <em>where</em> the sound got messed up. Divide the signal chain in half. Test the mixer output. If it sounds fine there, the problem is your speakers or amps. If it sounds bad there, the problem is your mic or cable.
+                <strong>Golden Rule:</strong> Never add EQ to fix a problem until you know where the problem started. Test the signal chain in the middle. If the mixer output sounds clean, the problem is after the mixer. If the mixer output sounds bad, the problem is before the mixer.
               </div>
-              <h4 style={{ textAlign: "center", margin: "2rem 0 1rem 0" }}>Beginner's "No Sound" Flowchart</h4>
+
+              <h4 style={{ textAlign: "center", margin: "2rem 0 1rem 0" }}>No Sound Flowchart</h4>
               <MermaidChart
                 theme={theme}
                 chart={`flowchart TD
-    A[No Sound Coming Out?] --> B{Is it Muted?}
-    B -- Yes --> C[Unmute it, genius.]
-    B -- No --> D{Is the channel getting signal?}
-    D -- No lights --> E{Is it a Condenser Mic?}
-    E -- Yes --> F[Turn on 48V Phantom Power]
-    E -- No --> G[Swap the XLR cable]
-    D -- Yes lights are flashing --> H{Is the Master Fader up?}
-    H -- No --> I[Push it to 0 / Unity]
-    H -- Yes --> J{Are the Amps/Speakers turned on?}
-    J -- No --> K[Flip the power switch]
-    J -- Yes --> L[Check the speaker cable & outputs]`}
+    A[No Sound?] --> B{Muted?}
+    B -- Yes --> C[Unmute the channel]
+    B -- No --> D{Signal light on?}
+    D -- No --> E{Condenser mic?}
+    E -- Yes --> F[Turn on phantom power]
+    E -- No --> G[Swap the cable]
+    D -- Yes --> H{Master fader up?}
+    H -- No --> I[Set fader to 0]
+    H -- Yes --> J{Amps on?}
+    J -- No --> K[Power on amps]
+    J -- Yes --> L[Check speaker cables]`}
               />
 
-              <h4 style={{ marginTop: "2rem" }}>Common Emergencies &amp; How to Fix Them Fast</h4>
-              <div className="sq-tree-root">Emergency: A low, constant buzzing (50/60 Hz Hum)</div>
+              <h4 style={{ marginTop: "2rem" }}>Common Emergencies</h4>
+
+              <div className="sq-tree-root">Problem: Low hum or buzz</div>
               <div className="sq-tree-node">
-                └── Swap the microphone and the cable.
-                <div className="sq-tree-node">
-                  ├── <strong>Did it stop?</strong> ➔ You had a bad cable or mic. Throw it in the repair bin.
-                  <br />└── <strong>Still humming?</strong> ➔ It's a power issue (ground loop) or an unbalanced cable run too far. Check the power strips feeding your amps and use DI boxes.
-                </div>
+                <strong>Step 1:</strong> Swap the mic and cable. If the hum stops, the mic or cable is bad.
+                <br /><strong>Step 2:</strong> If the hum stays, check power strips and use DI boxes to break ground loops.
               </div>
-              <div className="sq-tree-root warning">Emergency: Unbearable "Hissing" Noise</div>
+
+              <div className="sq-tree-root warning">Problem: Hissing noise</div>
               <div className="sq-tree-node">
-                └── Hit the MUTE button on the channel.
-                <div className="sq-tree-node">
-                  ├── <strong>Hiss goes away?</strong> ➔ You have the gain turned up WAY too high. Move the mic closer to the singer and turn the gain down.
-                  <br />└── <strong>Hiss stays?</strong> ➔ You probably have a compressor working too hard, dragging the background noise up.
-                </div>
+                <strong>Step 1:</strong> Mute the channel. If the hiss stops, the gain is too high. Move the mic closer and turn the gain down.
+                <br /><strong>Step 2:</strong> If the hiss stays, a compressor or noisy processor is dragging up the background noise.
               </div>
-              <div className="sq-tree-root success">Emergency: Vocals sound hollow, weak, and weird</div>
+
+              <div className="sq-tree-root success">Problem: Vocals sound hollow or weak</div>
               <div className="sq-tree-node">
-                └── Check your speakers. Are two speakers hitting the same area?
-                <div className="sq-tree-node">
-                  ├── <strong>Yes?</strong> ➔ One of your cables is wired backward, causing the speakers to cancel each other out (Phase Cancellation). Fix the wiring or flip the polarity switch on your board.
-                </div>
-              </div>
-            </div>
-          </motion.article>
-
-          <div className="sq-divider instructor">Instructor Appendix</div>
-
-          {/* Instructor */}
-          <motion.article
-            id="instructor"
-            className="sq-lesson-card sq-instructor-card"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="Instructor appendix"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-header">
-              <div className="sq-lock-badge">
-                <Lock size={12} />
-                Confidential For Lecturer
-              </div>
-              <h2 className="sq-lesson-title">Presentation Knowledge Graph</h2>
-              <p className="sq-lesson-subtitle">How the lecture flows from biology to execution</p>
-            </div>
-            <div className="sq-lesson-body">
-              <p style={{ color: "var(--muted)", marginBottom: "2rem" }}>
-                This graph maps the logical progression of the lecture. It moves from internal human biology out to the physical environment, through the electrical system, and finally to the operator's execution.
-              </p>
-              <MermaidChart
-                theme={theme}
-                chart={`flowchart TD
-    subgraph Phase1[Phase 1: The Human Listener]
-        A[Human Perception & Biology]
-        A1(Equal-Loudness Contours / ISO 226)
-        A2(2-5 kHz Peak Sensitivity)
-        A3(Auditory Masking & Adaptation)
-        A --> A1 & A2 & A3
-    end
-
-    subgraph Phase2[Phase 2: The Acoustic Space]
-        B[Room Environment & Decay]
-        B1(Sabine Formula: RT60)
-        B2(Absorption: Sabins / Audience)
-        B --> B1 & B2
-    end
-
-    subgraph Phase3[Phase 3: The Mechanical System]
-        C[Stage Physics & Loudspeakers]
-        C1(Inverse-Square Law: -6dB)
-        C2(Directivity & Sub Coupling)
-        C3(Comb Filtering & Stage Wash)
-        C --> C1 & C2 & C3
-    end
-
-    subgraph Phase4[Phase 4: Measurable Objectives]
-        D[System Goals & Targets]
-        D1(Intelligibility: STI > 0.6)
-        D2(Clarity: C50 / C80 > 0)
-        D3(Safety: 82-95 dB SPL limits)
-        D --> D1 & D2 & D3
-    end
-
-    subgraph Phase5[Phase 5: Operator Execution]
-        E[Troubleshooting & Workflow]
-        E1(The Half-Split Method)
-        E2(Gain Staging & 6dB Headroom)
-        E3(298EQ Checklist & Reference Tracks)
-        E --> E1 & E2 & E3
-    end
-
-    A ==>|Dictates how we hear| B
-    B ==>|Altered by| C
-    C ==>|Must achieve| D
-    D ==>|Managed via| E`}
-              />
-
-              <h4 style={{ marginTop: "2rem", marginBottom: "1rem" }}>Instructor's Conceptual Flowchart</h4>
-              <div className="sq-content-block">
-                <ul>
-                  <li><strong>Start with the Listener (Biology):</strong> Frame the entire class around the fact that human hearing is flawed and non-linear. You cannot trust your ears alone because volume changes tone.</li>
-                  <li><strong>Move to the Room (Acoustics):</strong> Explain that the room is an active participant in the mix. Rehearsals sound bad because Volume is high and Absorption is low; the audience fixes this by adding sabins.</li>
-                  <li><strong>Introduce the Gear (Physics):</strong> Now that they understand the room, explain how speakers interact with it. Emphasize controlling the mess (directivity) rather than just pushing faders.</li>
-                  <li><strong>Establish the Targets (Metrics):</strong> Tie the physics to actual numbers. It doesn't matter how good the music sounds if STI drops below 0.6 and no one can understand the words.</li>
-                  <li><strong>Finish with the Method (Action):</strong> Give them the operational checklist. Teach them to divide the signal chain in half to find problems, keep 6 dB of headroom, and always use an objective reference track.</li>
-                </ul>
-              </div>
-
-              <h4 style={{ marginTop: "2rem", marginBottom: "1rem" }}>Technical Glossary Reference</h4>
-              <div className="sq-glossary-list">
-                {[
-                  ["Auditory Adaptation", "The phenomenon where the brain adapts to a listening environment after 15–20 minutes, causing imbalances (like excessive bass or distortion) to sound 'normal'."],
-                  ["C50 / C80 (Clarity Index)", "Metrics for sound definition in a room. C50 is the standard for speech (target > +3 dB), while C80 is the standard for music (target > 0 dB)."],
-                  ["Comb Filtering", "Phase cancellation that occurs when a signal is mixed with a delayed version of itself, often demonstrated when panning mono signals or overlapping speaker coverage zones."],
-                  ["Crest Factor", "A measurement of dynamic range, calculated as the difference between the peak level and the RMS (average) level."],
-                  ["Critical Bands / Auditory Masking", "The ear groups nearby frequencies together; when two sounds occupy the same band, the louder sound will mask or hide the quieter one."],
-                  ["Directivity Index (DI)", "A manufacturer specification detailing a loudspeaker's pattern control, which dictates how much energy hits the audience versus spilling onto the stage."],
-                  ["Equal-Loudness Contours (ISO 226 / Fletcher-Munson)", "Curves demonstrating that human hearing sensitivity varies by frequency and volume level. Humans are most sensitive in the 2–5 kHz range."],
-                  ["Half-Split Method", "A troubleshooting technique where the signal chain is tested at the midpoint (e.g., the mixer) rather than sequentially."],
-                  ["Headroom", "The safety buffer maintained below a system's clipping point. The course advocates for a strict 6 dB minimum headroom on all buses."],
-                  ["Inverse-Square Law", "A principle stating that doubling the distance from a sound source reduces the Sound Pressure Level (SPL) by 6 dB."],
-                  ["LUFS (Loudness Units relative to Full Scale)", "A measurement of perceived loudness that adjusts for the human hearing contour, widely used as a broadcast compliance standard."],
-                  ["RT60 (Sabine Formula)", "The calculation for reverberation time, representing how long it takes for sound to decay by 60 decibels."],
-                  ["Sabins", "The unit of measurement for total acoustic absorption used in the RT60 calculation. For example, a seated audience member provides 0.3–0.6 sabins of absorption."],
-                  ["Speech Transmission Index (STI)", "A metric scaling from 0.00 to 1.00 used to measure vocal intelligibility. A score of ≥ 0.6 is considered 'Good'."],
-                  ["Subwoofer Coupling", "The physics principle where two identical, coherent low-frequency sources placed together add approximately +3 dB of energy, rather than +6 dB."],
-                ].map(([term, def]) => (
-                  <div key={term} className="sq-glossary-item">
-                    <strong>{term}</strong>
-                    <p>{def}</p>
-                  </div>
-                ))}
+                <strong>Step 1:</strong> Check if two speakers cover the same area.
+                <br /><strong>Step 2:</strong> If yes, one cable may be wired backwards, causing phase cancellation. Flip the polarity switch on the mixer or fix the wiring.
               </div>
             </div>
           </motion.article>

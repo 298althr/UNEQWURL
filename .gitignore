@@ -55,7 +55,7 @@ benchmark-data/
 
 # Scratch & temp
 scratch/
-uploads/
+/uploads/
 1.html
 
 # Design system (Figma exports, not runtime)

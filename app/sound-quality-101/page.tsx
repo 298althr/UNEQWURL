@@ -106,7 +106,7 @@ function loadHtml2Pdf() {
   return html2pdfLoadPromise;
 }
 
-const sectionIds = ["what-is-sound-quality", "factors-influencing", "metrics", "how-to-measure", "when-to-measure", "finding-faults"];
+const sectionIds = ["what-is-sound-quality", "factors-influencing", "metrics", "how-to-measure", "when-to-measure", "finding-faults", "glossary"];
 
 export default function SoundQuality101Page() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
@@ -648,6 +648,114 @@ export default function SoundQuality101Page() {
               <div className="sq-tree-node">
                 <strong>Step 1:</strong> Check if two speakers cover the same area.
                 <br /><strong>Step 2:</strong> If yes, one cable may be wired backwards, causing phase cancellation. Flip the polarity switch on the mixer or fix the wiring.
+              </div>
+            </div>
+          </motion.article>
+
+          {/* Glossary */}
+          <motion.article
+            id="glossary"
+            className="sq-lesson-card"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
+            tabIndex={0}
+            aria-label="Glossary of terms"
+          >
+            <div className="sq-lesson-glow" />
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/library.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <BookOpen size={14} />
+                  Reference
+                </div>
+                <h2 className="sq-lesson-title">Glossary</h2>
+                <p className="sq-lesson-subtitle">Quick definitions of terms and abbreviations used in this guide</p>
+              </div>
+            </div>
+            <div className="sq-lesson-body">
+              <div className="sq-glossary-list">
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Public Address">PA</abbr></strong>
+                  <p>Public Address system. The speakers, amplifiers, and mixer that project sound to the audience.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Equalizer">EQ</abbr></strong>
+                  <p>A tool that boosts or cuts specific frequency ranges to shape the sound.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Sound Pressure Level">SPL</abbr></strong>
+                  <p>The physical measurement of how loud a sound is, usually in decibels (dB).</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Decibel">dB</abbr></strong>
+                  <p>A logarithmic unit used to measure sound level or signal strength.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Hertz / kilohertz">Hz / kHz</abbr></strong>
+                  <p>Units of frequency. Hz means cycles per second; kHz means thousands of cycles per second.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Speech Transmission Index">STI</abbr></strong>
+                  <p>A score from 0 to 1 that measures how well speech can be understood in a room.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Clarity">C80</abbr></strong>
+                  <p>A metric that compares the energy in the first 80 milliseconds of a sound to the energy that comes later.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Reverberation Time">RT60</abbr></strong>
+                  <p>How long it takes for a sound to fade away by 60 dB after it stops.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Loudness Units relative to Full Scale">LUFS</abbr></strong>
+                  <p>A measurement of perceived loudness used for streaming and broadcast.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Frequency Response</strong>
+                  <p>How a system reproduces different frequencies, from low bass to high treble.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Reference Track</strong>
+                  <p>A song you know well, played through the PA to compare against your live mix.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong><abbr title="Real-Time Analyzer">RTA</abbr></strong>
+                  <p>A visual tool that shows the level of each frequency band in real time.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Feedback</strong>
+                  <p>The loud squeal that happens when a microphone picks up sound from its own speaker.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>High-pass Filter</strong>
+                  <p>A filter that removes low-frequency content below a set point, often used on vocals.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Gain Staging</strong>
+                  <p>Setting clean, strong signal levels at every step of the signal chain.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Clipping</strong>
+                  <p>When a signal is too strong and the waveform is cut off, creating distortion.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Phase</strong>
+                  <p>The timing relationship between two copies of the same sound. If they are out of phase, they can cancel each other.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Half-split Method</strong>
+                  <p>Testing the middle of the signal chain to quickly find where a problem starts.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Hum</strong>
+                  <p>A low-frequency noise, often caused by ground loops or bad power.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Hiss</strong>
+                  <p>A high-frequency noise, often caused by cheap preamps or bad cables.</p>
+                </div>
               </div>
             </div>
           </motion.article>

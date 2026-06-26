@@ -706,6 +706,53 @@ html[data-theme="light"] .sq-hero-bg::after {
   border-left: 4px solid var(--accent);
 }
 
+/* Glossary */
+.sq-glossary-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .sq-glossary-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sq-glossary-item {
+  padding: 1rem 1.25rem;
+  border-radius: var(--r-md);
+  background: var(--track-bg);
+  border: 1px solid var(--track-border);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sq-glossary-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.sq-glossary-item strong {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.sq-glossary-item abbr {
+  text-decoration: none;
+  cursor: help;
+  border-bottom: 1px dashed var(--accent);
+}
+
+.sq-glossary-item p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Floating navigation */
 .sq-nav {
   position: fixed;

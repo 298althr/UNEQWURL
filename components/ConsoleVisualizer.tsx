@@ -33,7 +33,7 @@ const ConsoleVisualizer = forwardRef<HTMLCanvasElement, Props>(
         <canvas
           ref={canvasRef}
           className="console-visualizer-canvas"
-          style={{ width: "100%", height: "200px", display: "block" }}
+          style={{ width: "100%", display: "block" }}
         />
         <div className="console-visualizer-waveform">
           <WaveformDisplay

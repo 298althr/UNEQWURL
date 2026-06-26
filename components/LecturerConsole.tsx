@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import ConsoleChannelStrip from "./ConsoleChannelStrip";
 import ConsoleMasterSection from "./ConsoleMasterSection";
 import ConsoleVisualizer from "./ConsoleVisualizer";
@@ -8,9 +8,11 @@ import MeterBridge from "./MeterBridge";
 import SCADAMetricsBar from "./SCADAMetricsBar";
 import MinimalPlayer from "./MinimalPlayer";
 import ImperfectionPanel from "./ImperfectionPanel";
+import LearningIndicators from "./LearningIndicators";
 import type { EQBand, EQSettings, SoundClass } from "@/lib/types";
 import type { ConsoleSettings } from "@/lib/audio-chain";
 import type { ImperfectionConfig, ImperfectionMetrics } from "@/lib/imperfection-types";
+import type { LearningIndicators as LearningIndicatorsType } from "@/lib/indicators";
 
 type Props = {
   // Track
@@ -50,6 +52,9 @@ type Props = {
   onSaveImperfectionProfile?: () => void;
   onResetImperfectionProfile?: () => void;
   isSavingImperfectionProfile?: boolean;
+  // Learning indicators (lazy — computed after first knob touch)
+  indicators: LearningIndicatorsType | null;
+  benchmarkSettings: EQSettings | null;
   // Visualizers
   spectrumStatus: "off" | "ready" | "active";
   vuAnalyser: AnalyserNode | null;
@@ -101,6 +106,8 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
     onSaveImperfectionProfile,
     onResetImperfectionProfile,
     isSavingImperfectionProfile,
+    indicators,
+    benchmarkSettings,
     spectrumStatus,
     vuAnalyser,
     isLiveStream = false,
@@ -110,9 +117,11 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
   },
   canvasRef
 ) {
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
   return (
     <div className="lecturer-console">
-      {/* Top bar: minimal player + A/B toggle + metrics */}
+      {/* Top bar: minimal player + A/B toggle + metrics + Advanced btn */}
       <div className="console-top-bar">
         <MinimalPlayer
           audioElement={audioElement}
@@ -140,10 +149,18 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
           bpm={bpm}
           musicalKey={musicalKey}
         />
+        <button
+          type="button"
+          className={`console-advanced-btn${advancedOpen ? " active" : ""}`}
+          onClick={() => setAdvancedOpen((o) => !o)}
+          title="Advanced controls"
+        >
+          {advancedOpen ? "◀ Basic" : "Advanced ▶"}
+        </button>
       </div>
 
-      {/* Main console grid */}
-      <div className="console-main-grid">
+      {/* Main console grid — basic controls */}
+      <div className={`console-main-grid${advancedOpen ? " dimmed" : ""}`}>
         <div className="console-left-rack">
           <ConsoleChannelStrip
             settings={eqSettings}
@@ -151,6 +168,7 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
             macroValue={fxMacroValue}
             onMacroChange={onFxMacroChange}
             uploadType={uploadType}
+            benchmarkSettings={benchmarkSettings}
           />
         </div>
 
@@ -168,6 +186,26 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
         </div>
 
         <div className="console-right-rack">
+          {indicators ? (
+            <LearningIndicators indicators={indicators} settings={eqSettings} />
+          ) : (
+            <div className="console-indicators-hint">
+              <span>Adjust a knob to activate live performance indicators</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Advanced overlay drawer */}
+      {advancedOpen && (
+        <div className="console-advanced-backdrop" onClick={() => setAdvancedOpen(false)} />
+      )}
+      <div className={`console-advanced-drawer${advancedOpen ? " open" : ""}`}>
+        <div className="console-advanced-drawer-header">
+          <span className="console-advanced-drawer-title">Advanced Controls</span>
+          <button type="button" className="console-advanced-drawer-close" onClick={() => setAdvancedOpen(false)}>✕</button>
+        </div>
+        <div className="console-advanced-drawer-body">
           <ConsoleMasterSection
             settings={consoleSettings}
             onChange={onConsoleChange}

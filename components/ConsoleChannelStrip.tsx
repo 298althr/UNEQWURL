@@ -11,18 +11,31 @@ type Props = {
   onMacroChange: (value: number) => void;
   uploadType: string;
   color?: string;
+  /** Optional benchmark EQ target — shows yellow tick on each knob's arc */
+  benchmarkSettings?: EQSettings | null;
 };
 
 const BAND_COLORS: Record<string, string> = {
-  low: "#6B8CFF",
-  mid: "#C084FC",
-  high: "#FF58AE",
-  gain: "#FFB347",
+  low:   "#6B8CFF",
+  mid:   "#C084FC",
+  high:  "#FF58AE",
+  gain:  "#FFB347",
   eq298: "#00D4AA",
 };
 
-export default function ConsoleChannelStrip({ settings, onChange, macroValue, onMacroChange, color = "#FF58AE" }: Props) {
-  const bands: EQBand[] = ["low", "mid", "high", "gain", "eq298"];
+/** Knob size hierarchy — larger = more educationally important */
+const BAND_SIZES: Record<EQBand, number> = {
+  low:   82,
+  eq298: 82,
+  mid:   70,
+  high:  70,
+  gain:  62,
+};
+
+/** Band layout order: primary bands first */
+const BAND_ORDER: EQBand[] = ["low", "eq298", "mid", "high", "gain"];
+
+export default function ConsoleChannelStrip({ settings, onChange, macroValue, onMacroChange, color = "#FF58AE", benchmarkSettings }: Props) {
   return (
     <div className="console-channel-strip">
       <div className="console-strip-header">
@@ -30,7 +43,7 @@ export default function ConsoleChannelStrip({ settings, onChange, macroValue, on
         <div className="console-strip-title">5-Band + FX</div>
       </div>
       <div className="console-strip-knobs">
-        {bands.map((band) => (
+        {BAND_ORDER.map((band) => (
           <ConsoleKnob
             key={band}
             label={BAND_LABELS[band]}
@@ -39,9 +52,10 @@ export default function ConsoleChannelStrip({ settings, onChange, macroValue, on
             max={12}
             step={0.1}
             bipolar
-            size={56}
+            size={BAND_SIZES[band]}
             color={BAND_COLORS[band] || color}
             onChange={(v) => onChange(band, v)}
+            benchmarkValue={benchmarkSettings?.[band]}
           />
         ))}
         <ConsoleKnob
@@ -51,7 +65,7 @@ export default function ConsoleChannelStrip({ settings, onChange, macroValue, on
           max={100}
           step={1}
           bipolar={false}
-          size={56}
+          size={72}
           color="#FF58AE"
           onChange={onMacroChange}
         />

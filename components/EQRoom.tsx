@@ -20,6 +20,7 @@ import {
   type ConsoleSettings,
 } from "@/lib/audio-chain";
 import LecturerConsole from "./LecturerConsole";
+import { computeIndicators, type LearningIndicators } from "@/lib/indicators";
 
 type Props = {
   songId: string;
@@ -96,6 +97,12 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
   }));
   const [isSavingImperfectionProfile, setIsSavingImperfectionProfile] = useState(false);
 
+  // Learning indicators (lazy — computed after first knob interaction)
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [benchmark, setBenchmark] = useState<{ settings: EQSettings; weights: EQSettings } | null>(null);
+  const [indicators, setIndicators] = useState<LearningIndicators | null>(null);
+  const sessionStartMsRef = useRef<number>(Date.now());
+
   const saveImperfectionProfile = useCallback(async () => {
     setIsSavingImperfectionProfile(true);
     try {
@@ -121,6 +128,20 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
   const resetImperfectionProfile = useCallback(() => {
     setImperfectionConfig(DEFAULT_IMPERFECTION_CONFIG);
   }, []);
+
+  const fetchBenchmark = useCallback(async () => {
+    if (!songId || songId.startsWith("live-")) return;
+    try {
+      const res = await fetch(`/api/songs/${songId}/benchmark`);
+      if (!res.ok) return;
+      const data = await res.json();
+      // Supports both { headphone, studio, live } and flat { settings, weights }
+      const bm = data?.headphone ?? data?.studio ?? data;
+      if (bm?.settings && bm?.weights) {
+        setBenchmark({ settings: bm.settings as EQSettings, weights: bm.weights as EQSettings });
+      }
+    } catch { /* no-op: benchmark unavailable */ }
+  }, [songId]);
 
   // BPM / Key display
   const [bpm, setBpm] = useState<number | null>(songBpm ?? null);
@@ -261,6 +282,10 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
 
   const handleSliderChange = useCallback(async (band: EQBand, value: number) => {
     await resumeContext();
+    if (!hasInteracted) {
+      setHasInteracted(true);
+      fetchBenchmark();
+    }
     setSettings((prev) => {
       const updated = { ...prev, [band]: value };
       if (chainRef.current) {
@@ -277,7 +302,7 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
         eq298ValuesHistoryRef.current.shift();
       }
     }
-  }, [resumeContext]);
+  }, [resumeContext, hasInteracted, fetchBenchmark]);
 
   const toggleAB = useCallback(async (enhanced: boolean) => {
     await resumeContext();
@@ -374,6 +399,7 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
   // Reset trackers when loading a new song
   useEffect(() => {
     sessionStartRef.current = new Date().toISOString();
+    sessionStartMsRef.current = Date.now();
     abTogglesCountRef.current = 0;
     eq298ValuesHistoryRef.current = [0];
     setSettings({ low: 0, mid: 0, high: 0, gain: 0, eq298: 0 });
@@ -387,6 +413,9 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
     setConsoleSettings(getDefaultConsoleSettings());
     setBpm(songBpm ? Math.round(songBpm) : null);
     setMusicalKey(songKey ?? null);
+    setHasInteracted(false);
+    setBenchmark(null);
+    setIndicators(null);
   }, [songId, uploadType, songBpm, songKey]);
 
   // BPM/Key are now cached server-side in the database (audio_features + songs/user_uploads tables).
@@ -405,6 +434,24 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
     }, 100);
     return () => clearInterval(interval);
   }, [isPlaying]);
+
+  // Recompute learning indicators whenever settings/benchmark/state change (after first interaction)
+  useEffect(() => {
+    if (!hasInteracted) return;
+    const timeSpent = (Date.now() - sessionStartMsRef.current) / 1000;
+    const prevScore = indicators?.soundQuality?.value ?? null;
+    const result = computeIndicators({
+      settings,
+      benchmark: benchmark ?? undefined,
+      previousScore: prevScore,
+      abToggles: abTogglesCountRef.current,
+      timeSpent,
+      isEnhanced,
+      genre: songGenre || undefined,
+    });
+    setIndicators(result);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings, benchmark, hasInteracted, isEnhanced, songGenre]);
 
   // Phase 3: Apply console settings whenever they change
   useEffect(() => {
@@ -635,6 +682,8 @@ export default function EQRoom({ songId, songTitle, songArtist, songAlbum, songG
         onSaveImperfectionProfile={saveImperfectionProfile}
         onResetImperfectionProfile={resetImperfectionProfile}
         isSavingImperfectionProfile={isSavingImperfectionProfile}
+        indicators={indicators}
+        benchmarkSettings={benchmark?.settings ?? null}
         spectrumStatus={spectrumStatus}
         vuAnalyser={vuAnalyserRef.current}
         isLiveStream={songId.startsWith("live-")}

@@ -205,6 +205,32 @@ const MEASUREMENTS = [
   { metric: "Frequency Response", what: "Tonal balance across spectrum", use: "EQ curve verification", inApp: "Spectrum Analyzer" },
   { metric: "Gain Reduction", what: "How much compressor is working", use: "Compression assessment", inApp: "Compressor GR meter" },
   { metric: "Crest Factor", what: "Dynamic range (peak − RMS)", use: "Genre-appropriate loudness", inApp: "VU Peak vs RMS gap" },
+  { metric: "STI", what: "Speech Transmission Index", use: "Intelligibility 0–1", inApp: "Imperfection Panel" },
+  { metric: "C80", what: "Clarity Index", use: "Early vs late energy", inApp: "Imperfection Panel" },
+  { metric: "SPL", what: "Sound Pressure Level", use: "Estimated loudness", inApp: "Imperfection Panel" },
+  { metric: "RT60", what: "Reverb Time", use: "Room decay time", inApp: "Imperfection Panel" },
+  { metric: "THD", what: "Total Harmonic Distortion", use: "Speaker/amp health", inApp: "Imperfection Panel" },
+];
+
+const IMPERFECTION_ZONES = [
+  { zone: "Cable", control: "Noise / Hum / Crackle / Cutoff", type: "Knobs+Toggle", status: "active", notes: "Simulates bad cables, ground hum, RF interference" },
+  { zone: "Speaker Damage", control: "Distortion / Torn Range / Health", type: "Knobs+Toggle", status: "active", notes: "Torn cone, voice-coil rub, mechanical failure" },
+  { zone: "Acoustics", control: "RT60 / Room Size / Absorption / Reverb", type: "Knobs+Toggle", status: "active", notes: "Room modes, reflections, reverberation" },
+  { zone: "Positioning", control: "L/R Delay / Angle / Distance", type: "Knobs+Toggle", status: "active", notes: "Speaker placement and stereo image errors" },
+  { zone: "Speaker Health", control: "Low Loss / High Loss / Degradation", type: "Knobs+Toggle", status: "active", notes: "Age-related frequency response loss" },
+  { zone: "Inconsistency", control: "Gain Var / Dropouts / Phase Var", type: "Knobs+Toggle", status: "active", notes: "Unstable signal, bad connections, phase drift" },
+  { zone: "Amplifier", control: "Saturation / Headroom / Warmth", type: "Knobs+Toggle", status: "active", notes: "Amp clipping, tube warmth, power compression" },
+  { zone: "Output", control: "L/R Gain / Delay / Polarity / Balance", type: "Knobs+Buttons", status: "active", notes: "Per-channel output management" },
+];
+
+const IMPERFECTION_METRICS = [
+  { metric: "STI", what: "Speech Transmission Index 0–1", use: "Intelligibility under noise/reverb", inApp: "Imperfection Panel header" },
+  { metric: "C80", what: "Clarity Index in dB", use: "Early vs late energy ratio", inApp: "Imperfection Panel header" },
+  { metric: "SPL", what: "Estimated Sound Pressure Level", use: "Perceived loudness", inApp: "Imperfection Panel header" },
+  { metric: "RT60", what: "Reverberation time in seconds", use: "Room acoustic decay", inApp: "Acoustics tab" },
+  { metric: "Frequency Response", what: "Quality score 0–100", use: "Speaker health / damage", inApp: "Imperfection Panel header" },
+  { metric: "Correlation", what: "L/R correlation -1 to 1", use: "Mono compatibility", inApp: "Imperfection Panel header" },
+  { metric: "THD", what: "Total Harmonic Distortion %", use: "Speaker/amplifier distortion", inApp: "Imperfection Panel header" },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -376,6 +402,7 @@ export default function ConsoleGuidePage() {
           <li><a href="#eq"><SlidersHorizontal /> 4. EQ & Frequency Control</a></li>
           <li><a href="#dynamics"><Gauge /> 5. Dynamics — Compressor & Limiter</a></li>
           <li><a href="#fx"><Zap /> 6. Advanced FX Chain</a></li>
+          <li><a href="#imperfections"><AlertTriangle /> 6b. Imperfections & Simulation</a></li>
           <li><a href="#meters"><BarChart3 /> 7. Meters & Monitoring</a></li>
           <li><a href="#quality"><Activity /> 8. Six Dimensions of Sound Quality</a></li>
           <li><a href="#workflow"><Play /> 9. Complete Workflow — Start to Finish</a></li>
@@ -794,6 +821,90 @@ export default function ConsoleGuidePage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* ───────────────────────────────────────
+          6b. IMPERFECTIONS & SIMULATION
+          ─────────────────────────────────────── */}
+      <div className="guide-section" id="imperfections">
+        <div className="guide-section-header">
+          <div className="guide-section-icon"><AlertTriangle size={14} /></div>
+          <div className="guide-section-title">6b. Imperfections & Simulation</div>
+        </div>
+        <div className="guide-section-subtitle">
+          Simulate real-world audio path problems — faulty cables, damaged speakers, bad acoustics, amplifier saturation,
+          and output mismanagement — then correct them using the console.
+        </div>
+
+        <div className="guide-card">
+          <h3><Activity size={14} /> Simulated Problems</h3>
+          <div className="guide-table-wrap">
+            <table className="guide-table">
+              <thead>
+                <tr>
+                  <th>Zone</th>
+                  <th>Control</th>
+                  <th>Type</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {IMPERFECTION_ZONES.map((row, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 700 }}>{row.zone}</td>
+                    <td>{row.control}</td>
+                    <td style={{ color: "var(--muted)" }}>{row.type}</td>
+                    <td style={{ color: "var(--muted)", fontSize: 12 }}>{row.notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="guide-card">
+          <h3><BarChart3 size={14} /> Live SCADA Metrics</h3>
+          <div className="guide-table-wrap">
+            <table className="guide-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>What</th>
+                  <th>Use</th>
+                  <th>In App</th>
+                </tr>
+              </thead>
+              <tbody>
+                {IMPERFECTION_METRICS.map((m, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 700 }}>{m.metric}</td>
+                    <td>{m.what}</td>
+                    <td style={{ color: "var(--muted)" }}>{m.use}</td>
+                    <td style={{ color: "var(--muted)", fontSize: 12 }}>{m.inApp}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="guide-grid-2">
+          <div className="guide-card">
+            <h3>Teaching Use</h3>
+            <p>
+              Enable one or more imperfection zones to inject a problem into the audio path before the EQ and dynamics.
+              Students hear the degraded signal; the lecturer demonstrates how to diagnose and correct it with console tools.
+            </p>
+          </div>
+          <div className="guide-card">
+            <h3>Save & Track</h3>
+            <p>
+              Use <strong>Save Profile</strong> to store a specific simulation setup to the database.
+              Use <strong>Reset</strong> to return all zones to neutral. Live metrics update every frame
+              so you can see the response to each control change.
+            </p>
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ const FILTER_MAP: Record<
 };
 
 import type { AdvancedFXChain } from "./effects/AdvancedFXChain";
+import type { ImperfectionChain } from "./effects/ImperfectionChain";
 
 // --- Phase 3: Console settings ---
 export interface CompressorSettings {
@@ -75,6 +76,7 @@ export type AudioChain = {
   source: MediaElementAudioSourceNode;
   audio: HTMLAudioElement;
   advancedFX?: AdvancedFXChain;
+  imperfectionChain?: ImperfectionChain;
   widthSplitter: ChannelSplitterNode;
   widthMerger: ChannelMergerNode;
   widthMidGain: GainNode; // mid gain (1 = normal)
@@ -96,7 +98,7 @@ function configureRuntime(runtime: WEQ8Runtime) {
   }
 }
 
-export function attachAudioChain(audio: HTMLAudioElement, advancedFX?: AdvancedFXChain, existingCtx?: AudioContext): AudioChain {
+export function attachAudioChain(audio: HTMLAudioElement, advancedFX?: AdvancedFXChain, existingCtx?: AudioContext, imperfectionChain?: ImperfectionChain): AudioChain {
   const cached = chains.get(audio);
   if (cached && cached.ctx.state !== "closed") {
     return cached;
@@ -157,8 +159,16 @@ export function attachAudioChain(audio: HTMLAudioElement, advancedFX?: AdvancedF
 
   const source = ctx.createMediaElementSource(audio);
 
-  // Routing: Source → [AdvancedFX] → WEQ8 → Compressor → Panner → Width → Limiter → ChannelGain → MakeupGain → Destination
-  if (advancedFX) {
+  // Routing: Source → [ImperfectionChain] → [AdvancedFX] → WEQ8 → Compressor → Panner → Width → Limiter → ChannelGain → MakeupGain → Destination
+  if (imperfectionChain) {
+    source.connect(imperfectionChain.input);
+    if (advancedFX) {
+      imperfectionChain.output.connect(advancedFX.input);
+      advancedFX.connect(runtime.input);
+    } else {
+      imperfectionChain.output.connect(runtime.input);
+    }
+  } else if (advancedFX) {
     source.connect(advancedFX.input);
     advancedFX.connect(runtime.input);
   } else {
@@ -199,7 +209,7 @@ export function attachAudioChain(audio: HTMLAudioElement, advancedFX?: AdvancedF
   channelGain.connect(makeupGain);
   makeupGain.connect(ctx.destination);
 
-  const chain: AudioChain = { ctx, runtime, compressor, panner, limiter, channelGain, makeupGain, source, audio, advancedFX, widthSplitter, widthMerger, widthMidGain, widthSideGain };
+  const chain: AudioChain = { ctx, runtime, compressor, panner, limiter, channelGain, makeupGain, source, audio, advancedFX, imperfectionChain, widthSplitter, widthMerger, widthMidGain, widthSideGain };
   chains.set(audio, chain);
   return chain;
 }
@@ -351,6 +361,8 @@ export function destroyAudioChain(audio: HTMLAudioElement) {
     chain.widthMerger.disconnect();
     chain.widthMidGain.disconnect();
     chain.widthSideGain.disconnect();
+    if (chain.advancedFX) chain.advancedFX.destroy();
+    if (chain.imperfectionChain) chain.imperfectionChain.destroy();
     void chain.ctx.close();
   } catch (e) {
     // already torn down

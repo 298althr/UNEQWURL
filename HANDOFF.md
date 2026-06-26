@@ -536,3 +536,128 @@ Accent colors are set via `data-accent` attributes on each `.sq-lesson-card` and
 - Add instructor-only content back if needed (currently removed from public tutorial).
 - Run accessibility audit (WCAG contrast, keyboard nav, screen reader) on the new module accents.
 - Consider adding a progress indicator or table-of-contents sidebar for the longer tutorial.
+
+---
+
+## EQ Room Redesign — Lecturer-Only Digital Console (Implemented)
+
+### Objective
+The `/room/[songId]` and `/room/stream` pages now render a **lecturer-only digital mixing console** inspired by the Behringer X32 / DAW IDE aesthetic: rotary knobs with illuminated LED rings, a few precision faders, tall live meters, and SCADA-style real-time metrics. The staged-learning UI and student gating have been removed. Students cannot access the dashboard or `/room/*`; they only view the console via the lecturer's projector.
+
+### Final Architecture
+```
+app/room/[songId]/page.tsx
+  └─ EQRoom (audio engine + orchestrator)
+       └─ LecturerConsole (new console shell)
+            ├─ ConsoleTransport (play/pause/stop/rewind + A/B toggle)
+            ├─ ConsoleChannelStrip (5 EQ bands + FX macro knobs)
+            ├─ ConsoleVisualizer (spectrum + waveform)
+            ├─ ConsoleMasterSection (main/comp/limiter faders + pan/width)
+            ├─ MeterBridge (tall L/R + GR meters)
+            └─ SCADAMetricsBar (LUFS, peak, crest, dynamic range, RMS, correlation, BPM/key)
+```
+
+### Final Files
+- **New components**
+  - `components/LecturerConsole.tsx` — console shell layout.
+  - `components/ConsoleKnob.tsx` — SVG rotary knob with LED ring, mouse/touch/keyboard support.
+  - `components/TallMeter.tsx` — canvas-based vertical LED bar with peak hold.
+  - `components/MeterBridge.tsx` — L/R and gain-reduction meter bridge.
+  - `components/SCADAMetricsBar.tsx` — live readout tiles (approximate LUFS, true peak, RMS, crest, dynamic range, correlation, BPM/key).
+  - `components/ConsoleChannelStrip.tsx` — 5 EQ band knobs + FX macro knob.
+  - `components/ConsoleMasterSection.tsx` — master fader, compressor/limiter faders, pan/width knobs.
+  - `components/ConsoleTransport.tsx` — transport controls + A/B compare toggle.
+  - `components/ConsoleVisualizer.tsx` — spectrum canvas + waveform display.
+- **Modified**
+  - `components/EQRoom.tsx` — stripped all staged-learning, lesson, and teaching-tool UI; kept the audio engine intact; now renders `LecturerConsole`.
+  - `app/room/eqroom.css` — added the full lecturer-console design system (dark metal chassis, channel strips, knob LED rings, meter bridge, SCADA tiles, responsive grid).
+  - `HANDOFF.md` — this section.
+- **Untouched (per frontend-only constraint)**
+  - `lib/audio-chain.ts`, `lib/effects/`, `processing-service/`, all API routes, worker services.
+- **Deprecated (still in repo, no longer used in room UI)**
+  - `components/EQSlider.tsx`, `components/MacroFader.tsx`, `components/StageGate.tsx`, `components/LessonModeOverlay.tsx`, `components/FrequencySweep.tsx`, `components/NoiseInjection.tsx`, `components/ClippingDemo.tsx`, `components/HeadphoneProfile.tsx`, `components/EarTrainingQuiz.tsx`, `components/AdvancedTraining.tsx`, `components/StudioToolsPanel.tsx`, `components/ConsoleStrip.tsx`, `components/CompressorControls.tsx`, `components/LUFSMeter.tsx`, `components/ReferencePanel.tsx`, `components/LiveModePanel.tsx`, `components/VUMeter.tsx`, `components/EQPresets.tsx`, `components/SessionResults.tsx`, `lib/staged-learning.ts`.
+
+### Key Requirements (implemented)
+1. **Frontend-only refactor**: `lib/audio-chain.ts`, `lib/effects/`, and `processing-service/` were not modified.
+2. **Staged learning removed**: `StageGate`, lesson-mode overlays, zone gating, and teaching tools no longer render in the room.
+3. **Sliders → knobs**: `low`, `mid`, `high`, `gain`, `eq298`, and `FX macro` are rotary knobs with colored LED arcs.
+4. **Few faders kept**: `Main` gain, `Compressor Threshold`, and `Limiter Ceiling` faders remain in the master section; `Pan` and `Width` are knobs.
+5. **Tall meters**: `MeterBridge` shows L/R level meters and a gain-reduction meter.
+6. **SCADA metrics bar**: shows LUFS (approx), true peak, RMS, crest, dynamic range, correlation, BPM, and key.
+7. **Live visualization**: the existing spectrum canvas renderer is reused via ref forwarding; the `WaveformDisplay` component remains in the central panel.
+8. **A/B compare**: an "Enhanced (298EQ) / Original" toggle is included in the transport bar.
+
+### Implementation Phases (completed)
+- Phase 1 — Cleaned up `EQRoom.tsx` and prepared the shell.
+- Phase 2 — Built `ConsoleKnob` and replaced EQ/FX sliders.
+- Phase 3 — Built `TallMeter` and `MeterBridge`.
+- Phase 4 — Built `SCADAMetricsBar`.
+- Phase 5 — Assembled `LecturerConsole` and the console layout.
+- Phase 6 — Added CSS styling, responsive breakpoints, and verified `npm run build`.
+
+### Acceptance Criteria
+- [x] The room is fully interactive for the lecturer; no student-facing controls exist because the dashboard blocks student access entirely.
+- [x] No staged-learning UI remains in the room.
+- [x] 5 EQ bands and the FX macro are controlled by rotary knobs with LED rings.
+- [x] A meter bridge with tall vertical L/R and gain-reduction meters is visible and live.
+- [x] A SCADA metrics bar shows LUFS, true peak, crest factor, dynamic range, RMS, and BPM/key.
+- [x] The spectrum analyzer and waveform display remain real-time and performant.
+- [x] `npm run build` passes with no errors.
+- [x] The new console matches a dark digital-mixer aesthetic (Behringer X32 inspired) and uses the existing design tokens.
+
+### Deviations / Notes
+- LUFS is computed as a rough frontend approximation (RMS − 1.1 dB) rather than a full ITU-R BS.1770 algorithm, because the audio engine was not modified.
+- True peak is an inter-sample peak approximation; no dedicated true-peak meter node was added.
+- The correlation meter is a mono-vs-stereo correlation approximation based on the time-domain analyser buffer.
+- The FX macro is exposed as a single 0–100 knob mapped to the existing `AdvancedFXChain.setMacro` API.
+- Some old components (`EQSlider`, `MacroFader`, `StageGate`, etc.) were left in the repo but are no longer imported by the room UI to avoid breaking other potential consumers.
+- No role gating was implemented; access control is enforced by the dashboard route, not by the room UI.
+
+### Risks / Follow-up
+- Interactive testing in the browser is needed to confirm knob drag, meter responsiveness, and audio playback.
+- The SCADA metrics can be made more accurate later by adding a dedicated LUFS meter node.
+
+---
+
+## Imperfections & Simulation Engine
+
+### Objective
+Add a lecturer-controlled simulation layer that models real-world audio path problems (bad cables, clipping, torn speakers, speaker health, room acoustics, amplifier saturation, and per-channel output issues) and exposes live SCADA-style metrics (STI, C80, SPL, RT60, LUFS, frequency-response score, correlation, THD).
+
+### New DB Tables
+- `imperfection_profiles` — saved simulation configurations (user-scoped, JSON config).
+- `imperfection_sessions` — live telemetry snapshots for a playback session (console state + metrics).
+
+### New Backend Files
+- `lib/imperfection-types.ts` — TypeScript types and default config for all simulation zones.
+- `lib/imperfections.ts` — DB CRUD for profiles and session tracking.
+- `app/api/imperfections/profiles/route.ts` — list / create profiles.
+- `app/api/imperfections/profiles/[id]/route.ts` — get / update / delete a profile.
+- `app/api/imperfections/sessions/route.ts` — create / update / end a session.
+
+### Modified Engine
+- `lib/audio-chain.ts` — `attachAudioChain` now accepts an optional `ImperfectionChain` and routes it after the source node but before AdvancedFX/WEQ8, so the console can correct the simulated problem.
+- `lib/effects/ImperfectionChain.ts` — new Web Audio chain that creates/removes nodes for each simulation zone:
+  - **Cable**: pink noise + 60 Hz hum + random crackles.
+  - **Speaker damage**: bandpass distortion for torn-cone simulation.
+  - **Acoustics**: generated impulse-response reverb with RT60 control.
+  - **Positioning**: per-channel delays.
+  - **Speaker health**: low/high shelf frequency loss + overall degradation.
+  - **Inconsistency**: LFO gain modulation.
+  - **Amplifier**: soft-clipping wave shaper + warmth shelf.
+  - **Output**: per-channel gain, delay, polarity, and balance.
+- Computes approximate STI, C80, SPL, RT60, LUFS, correlation, left/right levels, THD, and frequency-response quality every animation frame.
+
+### New Frontend Components
+- `components/ImperfectionPanel.tsx` — tabbed SCADA control panel with toggles + knobs for each zone and live metric readouts.
+- `components/MinimalPlayer.tsx` — minimal track player with album art, title/artist, click/drag seek bar, play/pause/stop/rewind.
+- `components/LecturerConsole.tsx` — integrated MinimalPlayer into the top bar and ImperfectionPanel into the right rack.
+- `components/EQRoom.tsx` — manages imperfection state, creates the chain, polls metrics, and saves profiles via the API.
+- `app/docs/console-guide/page.tsx` — added section 6b documenting the imperfection zones and metrics.
+- `app/room/eqroom.css` — added styles for the minimal player, imperfection panel, and responsive layout.
+
+### Notes
+- Metrics are frontend approximations because full STI/C80/LUFS algorithms require offline processing or dedicated DSP nodes.
+- The simulation chain is inserted **before** the EQ/dynamics so the lecturer can correct the simulated problem.
+- Profiles are saved per-user and can be retrieved via the API for later reuse.
+- `npm run build` passes with all new routes registered.

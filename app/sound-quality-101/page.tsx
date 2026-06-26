@@ -589,7 +589,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="finding-faults"
             className="sq-lesson-card sq-bonus-card"
-            data-accent="dark-purple"
+            data-accent="module6"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -598,7 +598,7 @@ export default function SoundQuality101Page() {
             aria-label="Finding and fixing faults"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/console.png)" }}>
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/module6.png)" }}>
               <div className="sq-lesson-hero-content">
                 <div className="sq-lesson-number">
                   <Cable size={14} />
@@ -656,6 +656,7 @@ export default function SoundQuality101Page() {
           <motion.article
             id="glossary"
             className="sq-lesson-card"
+            data-accent="navy"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
@@ -664,7 +665,7 @@ export default function SoundQuality101Page() {
             aria-label="Glossary of terms"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/library.png)" }}>
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/reference.png)" }}>
               <div className="sq-lesson-hero-content">
                 <div className="sq-lesson-number">
                   <BookOpen size={14} />

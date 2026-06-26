@@ -123,7 +123,8 @@ html[data-theme="light"] .sq-header {
 .sq-lesson-card[data-accent="blue"] { --accent: #00a6ff; --accent-light: #4dc4ff; --accent-dark: #0077cc; }
 .sq-lesson-card[data-accent="magenta"] { --accent: #8b0046; --accent-light: #c40066; --accent-dark: #5c002e; }
 .sq-lesson-card[data-accent="orange"] { --accent: hsl(27, 93%, 60%); --accent-light: hsl(27, 93%, 75%); --accent-dark: hsl(27, 93%, 45%); }
-.sq-lesson-card[data-accent="dark-purple"] { --accent: #3b00b0; --accent-light: #6b33e0; --accent-dark: #250070; }
+.sq-lesson-card[data-accent="module6"] { --accent: #8cc0a6; --accent-light: #a8d4c0; --accent-dark: #6fa88c; }
+.sq-lesson-card[data-accent="navy"] { --accent: #000080; --accent-light: #1a237e; --accent-dark: #00004d; }
 
 .sq-hero-bg {
   position: absolute;

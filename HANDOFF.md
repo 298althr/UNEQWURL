@@ -660,4 +660,8 @@ Add a lecturer-controlled simulation layer that models real-world audio path pro
 - Metrics are frontend approximations because full STI/C80/LUFS algorithms require offline processing or dedicated DSP nodes.
 - The simulation chain is inserted **before** the EQ/dynamics so the lecturer can correct the simulated problem.
 - Profiles are saved per-user and can be retrieved via the API for later reuse.
+- Removed duplicate transport controls from the top bar; A/B comparison is now a compact toggle next to the minimal player.
+- Added light-mode overrides for the console so cards, panels, and text render correctly on a light background with black text.
+- Widened the center rack so the Resonance Matrix and Waveform cards have more horizontal space.
+- Fixed a right-channel drop-out bug in `ImperfectionChain` where the stereo chain was incorrectly connected to a single input of a `ChannelMergerNode`.
 - `npm run build` passes with all new routes registered.

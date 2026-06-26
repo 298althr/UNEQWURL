@@ -1,7 +1,6 @@
 "use client";
 
 import { forwardRef } from "react";
-import ConsoleTransport from "./ConsoleTransport";
 import ConsoleChannelStrip from "./ConsoleChannelStrip";
 import ConsoleMasterSection from "./ConsoleMasterSection";
 import ConsoleVisualizer from "./ConsoleVisualizer";
@@ -113,7 +112,7 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
 ) {
   return (
     <div className="lecturer-console">
-      {/* Top bar: minimal player + transport + metrics */}
+      {/* Top bar: minimal player + A/B toggle + metrics */}
       <div className="console-top-bar">
         <MinimalPlayer
           audioElement={audioElement}
@@ -128,16 +127,13 @@ const LecturerConsole = forwardRef<HTMLCanvasElement, Props>(function LecturerCo
           onRewind={onRewind}
           onSeek={onSeek}
         />
-        <ConsoleTransport
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={duration}
-          onPlay={onTogglePlay}
-          onStop={onStop}
-          onRewind={onRewind}
-          isEnhanced={isEnhanced}
-          onToggleAB={onToggleAB}
-        />
+        <div className="console-ab-toggle">
+          <span className={`ab-label ${!isEnhanced ? "active" : ""}`}>Original</span>
+          <button type="button" className={`ab-switch ${isEnhanced ? "ab-switch--on" : ""}`} onClick={onToggleAB} aria-label="Toggle console processing">
+            <span className="ab-switch-thumb" />
+          </button>
+          <span className={`ab-label ${isEnhanced ? "active" : ""}`}>Enhanced</span>
+        </div>
         <SCADAMetricsBar
           analyser={vuAnalyser}
           isPlaying={isPlaying}

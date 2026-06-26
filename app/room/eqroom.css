@@ -3381,6 +3381,63 @@ html[data-theme="light"] .room-page .lesson-float-step-pill:hover {
   border-radius: var(--r-lg);
 }
 
+.console-ab-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 12px;
+}
+
+.console-ab-toggle .ab-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: color 0.2s ease;
+  min-width: 54px;
+  text-align: center;
+}
+
+.console-ab-toggle .ab-label.active {
+  color: var(--text);
+}
+
+.console-ab-toggle .ab-switch {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.console-ab-toggle .ab-switch--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.console-ab-toggle .ab-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+.console-ab-toggle .ab-switch--on .ab-switch-thumb {
+  transform: translateX(24px);
+}
+
 .console-track-card {
   display: flex;
   align-items: center;
@@ -3566,10 +3623,10 @@ html[data-theme="light"] .room-page .lesson-float-step-pill:hover {
   margin-left: 4px;
 }
 
-/* Main grid */
+/* Main grid: center visualizer gets more room */
 .console-main-grid {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(260px, 1fr) 2fr minmax(300px, 1fr);
   gap: 16px;
   flex: 1;
   min-height: 0;
@@ -4251,6 +4308,131 @@ html[data-theme="light"] .room-page .lesson-float-step-pill:hover {
 .imp-action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Light mode overrides */
+html[data-theme="light"] .console-top-bar,
+html[data-theme="light"] .console-channel-strip,
+html[data-theme="light"] .console-visualizer,
+html[data-theme="light"] .console-master-section,
+html[data-theme="light"] .meter-bridge,
+html[data-theme="light"] .imperfection-panel,
+html[data-theme="light"] .scada-metric-tile,
+html[data-theme="light"] .minimal-player {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+html[data-theme="light"] .console-track-art,
+html[data-theme="light"] .mp-cover,
+html[data-theme="light"] .console-knob-body,
+html[data-theme="light"] .console-strip-scribble {
+  background: var(--track-bg);
+  border-color: var(--border);
+}
+
+html[data-theme="light"] .console-visualizer-canvas {
+  background: linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.08) 100%);
+}
+
+html[data-theme="light"] .console-ab-toggle .ab-switch {
+  background: var(--track-bg);
+  border-color: var(--border);
+}
+
+html[data-theme="light"] .mp-progress-track,
+html[data-theme="light"] .console-strip-header,
+html[data-theme="light"] .imp-header,
+html[data-theme="light"] .console-visualizer-header,
+html[data-theme="light"] .meter-bridge-header,
+html[data-theme="light"] .console-master-header {
+  border-color: var(--border);
+}
+
+html[data-theme="light"] .mp-progress-fill {
+  background: var(--accent);
+}
+
+html[data-theme="light"] .mp-btn,
+html[data-theme="light"] .imp-action-btn,
+html[data-theme="light"] .imp-toggle,
+html[data-theme="light"] .imp-tab,
+html[data-theme="light"] .imp-polarity-btn,
+html[data-theme="light"] .console-transport-btn,
+html[data-theme="light"] .console-master-btn {
+  background: var(--track-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html[data-theme="light"] .mp-btn:hover,
+html[data-theme="light"] .imp-action-btn:hover,
+html[data-theme="light"] .imp-toggle:hover,
+html[data-theme="light"] .imp-tab:hover,
+html[data-theme="light"] .imp-polarity-btn:hover,
+html[data-theme="light"] .console-transport-btn:hover,
+html[data-theme="light"] .console-master-btn:hover {
+  background: rgba(0,0,0,0.06);
+  border-color: var(--border-hover);
+}
+
+html[data-theme="light"] .imp-metric-mini,
+html[data-theme="light"] .scada-tile-value,
+html[data-theme="light"] .console-knob-value,
+html[data-theme="light"] .meter-value {
+  color: var(--text);
+}
+
+html[data-theme="light"] .console-strip-title,
+html[data-theme="light"] .console-visualizer-title,
+html[data-theme="light"] .console-master-title,
+html[data-theme="light"] .meter-bridge-title,
+html[data-theme="light"] .imp-title,
+html[data-theme="light"] .mp-time,
+html[data-theme="light"] .mp-artist,
+html[data-theme="light"] .scada-tile-label,
+html[data-theme="light"] .console-knob-label,
+html[data-theme="light"] .imp-metric-label,
+html[data-theme="light"] .imp-tab,
+html[data-theme="light"] .imp-toggle-label,
+html[data-theme="light"] .imp-action-btn,
+html[data-theme="light"] .imp-polarity-btn {
+  color: var(--muted);
+}
+
+html[data-theme="light"] .mp-title,
+html[data-theme="light"] .console-track-title,
+html[data-theme="light"] .ab-label.active,
+html[data-theme="light"] .imp-tab.active,
+html[data-theme="light"] .imp-toggle.active,
+html[data-theme="light"] .imp-metric-value {
+  color: var(--text);
+}
+
+html[data-theme="light"] .imp-toggle.active {
+  background: rgba(255,88,174,0.08);
+  border-color: rgba(255,88,174,0.25);
+}
+
+html[data-theme="light"] .imp-polarity-btn.inverted {
+  background: rgba(239,68,68,0.08);
+  border-color: rgba(239,68,68,0.25);
+  color: #dc2626;
+}
+
+html[data-theme="light"] .console-visualizer-badge.ready {
+  background: rgba(234,179,8,0.12);
+  color: #b45309;
+}
+
+html[data-theme="light"] .console-visualizer-badge.active {
+  background: rgba(34,197,94,0.12);
+  color: #15803d;
+}
+
+html[data-theme="light"] .console-visualizer-badge.offline {
+  background: rgba(100,116,139,0.12);
+  color: #475569;
 }
 
 /* Responsive */

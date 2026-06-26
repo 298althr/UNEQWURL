@@ -340,8 +340,8 @@ export class ImperfectionChain {
     this.nodes.push(outputSplitter, leftGain, rightGain, balanceLeft, balanceRight, outputMerger);
     chainEnd = outputMerger;
 
-    // Final connection
-    chainEnd.connect(this.merger);
+    // Final connection: chainEnd is already stereo, route directly to output
+    chainEnd.connect(this.output);
     this.output.connect(this.analyser);
 
     // Update metrics based on config

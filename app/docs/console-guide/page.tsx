@@ -339,7 +339,7 @@ export default function ConsoleGuidePage() {
       <div className="guide-hero relative overflow-hidden rounded-2xl">
         <div
           className="page-hero-bg absolute inset-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: "url('/assets/hero/dashboard.png')" }}
+          style={{ backgroundImage: "url('/assets/hero/profile.png')" }}
         />
         <div className="guide-hero-badge">
           <Headphones size={12} />

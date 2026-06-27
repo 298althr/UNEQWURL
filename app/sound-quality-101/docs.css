@@ -561,6 +561,25 @@ html[data-theme="light"] .sq-hero-bg::after {
   color: var(--text);
 }
 
+/* Diagrams */
+.sq-diagram {
+  width: 100%;
+  max-height: 240px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .sq-diagram {
+    max-height: 180px;
+    padding: 0.75rem;
+  }
+}
+
 /* Demo box */
 .sq-demo-box {
   padding: 1.5rem;

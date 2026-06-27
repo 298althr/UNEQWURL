@@ -18,9 +18,19 @@ import {
   HeartPulse,
   Thermometer,
   Wrench,
+  Volume2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { APP_NAME } from "@/lib/brand";
+import {
+  EarBiasDiagram,
+  FaultCategorySignalChain,
+  MeterDashboard,
+  RoomAcousticsDiagram,
+  DriftTimeline,
+  HalfSplitDiagram,
+  GoodSoundSpectrum,
+} from "./diagrams";
 import "./docs.css";
 
 function haptic(ms = 5) {
@@ -49,6 +59,7 @@ function loadHtml2Pdf() {
 
 const sectionIds = [
   "hero",
+  "overview",
   "engineer-mindset",
   "fault-categories",
   "reading-meters",
@@ -85,26 +96,70 @@ export default function SoundQuality101Page() {
   const downloadPdf = useCallback(async () => {
     try {
       const html2pdf = await loadHtml2Pdf();
-      const element = document.getElementById("sq-slideshow-track");
-      if (!element) return;
+      const track = document.getElementById("sq-slideshow-track");
+      const slideshow = document.querySelector(".sq-slideshow") as HTMLElement | null;
+      if (!track || !slideshow) return;
       haptic(10);
-      const originalTransform = element.style.transform;
-      const originalTransition = element.style.transition;
-      element.style.transform = "translateX(0)";
-      element.style.transition = "none";
-      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      const originalTrackTransform = track.style.transform;
+      const originalTrackTransition = track.style.transition;
+      const originalTrackFlexDirection = track.style.flexDirection;
+      const originalSlideshowOverflow = slideshow.style.overflow;
+      const originalSlideshowPosition = slideshow.style.position;
+      const originalSlideshowHeight = slideshow.style.height;
+      const slideStyles = new Map<HTMLElement, string>();
+      const scrollStyles = new Map<HTMLElement, string>();
+
+      // Stack slides vertically for PDF capture so all content is visible
+      track.style.transform = "translateX(0)";
+      track.style.transition = "none";
+      track.style.flexDirection = "column";
+      slideshow.style.overflow = "visible";
+      slideshow.style.position = "relative";
+      slideshow.style.height = "auto";
+
+      const slides = Array.from(track.children) as HTMLElement[];
+      slides.forEach((slide) => {
+        slideStyles.set(slide, slide.style.cssText);
+        slide.style.flex = "none";
+        slide.style.width = "100%";
+        slide.style.height = "auto";
+        slide.style.overflow = "visible";
+        const scroll = slide.querySelector(".sq-slide-scroll") as HTMLElement | null;
+        if (scroll) {
+          scrollStyles.set(scroll, scroll.style.cssText);
+          scroll.style.overflow = "visible";
+          scroll.style.height = "auto";
+        }
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       await html2pdf()
         .set({
-          margin: 10,
+          margin: 0,
           filename: "sound-quality-101.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          image: { type: "jpeg", quality: 0.85 },
+          html2canvas: { scale: 1, useCORS: true, logging: false, width: 1400, windowWidth: 1400 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+          pagebreak: { mode: ["avoid-all", "css"], before: [".sq-slide"] },
         })
-        .from(element)
+        .from(track)
         .save();
-      element.style.transform = originalTransform;
-      element.style.transition = originalTransition;
+
+      track.style.transform = originalTrackTransform;
+      track.style.transition = originalTrackTransition;
+      track.style.flexDirection = originalTrackFlexDirection;
+      slideshow.style.overflow = originalSlideshowOverflow;
+      slideshow.style.position = originalSlideshowPosition;
+      slideshow.style.height = originalSlideshowHeight;
+      slides.forEach((slide) => {
+        slide.style.cssText = slideStyles.get(slide) || "";
+        const scroll = slide.querySelector(".sq-slide-scroll") as HTMLElement | null;
+        if (scroll && scrollStyles.has(scroll)) {
+          scroll.style.cssText = scrollStyles.get(scroll) || "";
+        }
+      });
     } catch {
       window.print();
     }
@@ -283,6 +338,63 @@ export default function SoundQuality101Page() {
         <section className="sq-slide">
           <div className="sq-slide-scroll">
             <div className="sq-slide-content">
+              {/* Overview: What is Good Sound? */}
+              <motion.article
+                id="overview"
+                className="sq-lesson-card"
+                data-accent="blue"
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                tabIndex={0}
+                aria-label="What is good sound"
+              >
+                <div className="sq-lesson-glow" />
+                <div className="sq-lesson-hero" style={{ backgroundImage: "linear-gradient(135deg, #0b1a2b 0%, #0d2e1e 100%)" }}>
+                  <div className="sq-lesson-hero-content">
+                    <div className="sq-lesson-number">
+                      <Volume2 size={14} />
+                      Overview
+                    </div>
+                    <h2 className="sq-lesson-title">What is Good Sound?</h2>
+                    <p className="sq-lesson-subtitle">The goal before the fix</p>
+                  </div>
+                </div>
+                <div className="sq-lesson-body">
+                  <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
+                    Good sound should be intelligible, evenly balanced across low, mid, and high frequencies, free from feedback, hum, clipping, and excessive noise, while remaining comfortable to listen to and faithful to the original performance.
+                  </p>
+                  <GoodSoundSpectrum />
+                  <div className="sq-grid">
+                    <div className="sq-content-block">
+                      <h4>Clear and balanced</h4>
+                      <ul>
+                        <li><strong>Intelligible:</strong> every word and note is easy to understand.</li>
+                        <li><strong>Balanced:</strong> bass, midrange, and treble sit together naturally.</li>
+                        <li><strong>Comfortable:</strong> the listener can enjoy it without fatigue.</li>
+                      </ul>
+                    </div>
+                    <div className="sq-content-block">
+                      <h4>Clean and faithful</h4>
+                      <ul>
+                        <li><strong>Free from problems:</strong> no feedback, hum, clipping, or excessive noise.</li>
+                        <li><strong>Faithful:</strong> the sound in the room matches the original performance.</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="sq-quote">
+                    <strong>Key point:</strong> you cannot fix bad sound until you know what good sound sounds like.
+                  </div>
+                </div>
+              </motion.article>
+            </div>
+          </div>
+        </section>
+
+        <section className="sq-slide">
+          <div className="sq-slide-scroll">
+            <div className="sq-slide-content">
           {/* Module 1: Think Like an Engineer */}
           <motion.article
             id="engineer-mindset"
@@ -310,6 +422,7 @@ export default function SoundQuality101Page() {
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
                 Good sound is not created by turning knobs. Good sound is created by finding the real cause of bad sound.
               </p>
+              <EarBiasDiagram />
               <div className="sq-grid">
                 <div className="sq-content-block">
                   <h4>Why your ears can lie</h4>
@@ -361,6 +474,7 @@ export default function SoundQuality101Page() {
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
                 Every bad sound comes from hardware, software, or both. Hardware is the physical equipment you can touch. Software is the settings, routing, plugins, and firmware that control it. If you can name the category, you know where to look first.
               </p>
+              <FaultCategorySignalChain />
               <div className="sq-table-responsive">
                 <table className="sq-table">
                   <thead>
@@ -440,6 +554,7 @@ export default function SoundQuality101Page() {
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
                 Meters do not replace listening. They help you hear what your ears missed. Start with these four readings.
               </p>
+              <MeterDashboard />
               <div className="sq-grid">
                 <div className="sq-content-block">
                   <h4>Level meters</h4>
@@ -529,6 +644,7 @@ export default function SoundQuality101Page() {
                   </ul>
                 </div>
               </div>
+              <RoomAcousticsDiagram />
               <div className="sq-grid" style={{ marginTop: "1rem" }}>
                 <div className="sq-content-block">
                   <h4>Room acoustics</h4>
@@ -576,6 +692,7 @@ export default function SoundQuality101Page() {
               </div>
             </div>
             <div className="sq-lesson-body">
+              <DriftTimeline />
               <div className="sq-grid">
                 <div className="sq-content-block">
                   <h4>Why sound changes during the day</h4>
@@ -651,6 +768,8 @@ export default function SoundQuality101Page() {
                 <div className="sq-flow-arrow" />
                 <div className="sq-flow-node success">5. Use EQ last</div>
               </div>
+
+              <HalfSplitDiagram />
 
               <div className="sq-grid" style={{ marginTop: "1rem" }}>
                 <div className="sq-content-block">

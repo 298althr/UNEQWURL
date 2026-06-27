@@ -262,7 +262,7 @@ export default function SoundQuality101Page() {
               <button
                 className="sq-hero-cta sq-hero-cta-primary sq-haptic sq-focusable"
                 onClick={() => goToSlide(1)}
-                style={{ background: "none", border: "none" }}
+                style={{ border: "none", font: "inherit", cursor: "pointer" }}
               >
                 <Play size={18} />
                 Start Learning

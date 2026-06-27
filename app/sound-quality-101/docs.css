@@ -102,6 +102,54 @@ html[data-theme="light"] .sq-header {
   transform: scale(0.94);
 }
 
+/* Slideshow layout */
+.sq-tutorial {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sq-slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.sq-slideshow-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sq-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sq-slide-hero .sq-hero {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  padding: 6rem 1.5rem 2rem;
+}
+
+.sq-slide-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 5.5rem 1.5rem 6rem;
+}
+
+.sq-slide-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 /* Hero */
 .sq-hero {
   position: relative;
@@ -760,7 +808,7 @@ html[data-theme="light"] .sq-hero-bg::after {
   bottom: 1.5rem;
   right: 1.5rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.625rem;
   z-index: 90;
 }
@@ -842,6 +890,39 @@ html[data-theme="light"] .sq-hero-bg::after {
   animation: sq-fade-up 0.7s ease forwards;
 }
 
+/* Progress indicator */
+.sq-progress {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  z-index: 90;
+  padding: 0.5rem 1rem;
+  border-radius: var(--r-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.sq-progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.sq-progress-dot.active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+
 /* Keyboard hint */
 .sq-keyboard-hint {
   position: fixed;
@@ -886,6 +967,12 @@ html[data-theme="light"] .sq-hero-bg::after {
     padding: 6rem 1rem 3rem;
     min-height: auto;
   }
+  .sq-slide-hero .sq-hero {
+    padding: 5rem 1rem 2rem;
+  }
+  .sq-slide-scroll {
+    padding: 5rem 1rem 5.5rem;
+  }
   .sq-section {
     padding: 2.5rem 1rem;
   }
@@ -900,6 +987,18 @@ html[data-theme="light"] .sq-hero-bg::after {
   .sq-nav {
     bottom: 1rem;
     right: 1rem;
+  }
+  .sq-nav-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .sq-progress {
+    bottom: 1rem;
+    padding: 0.375rem 0.75rem;
+  }
+  .sq-progress-dot {
+    width: 8px;
+    height: 8px;
   }
   .sq-keyboard-hint {
     display: none;
@@ -930,6 +1029,7 @@ html[data-theme="light"] .sq-hero-bg::after {
   .sq-header,
   .sq-nav,
   .sq-keyboard-hint,
+  .sq-progress,
   .sq-hero {
     display: none !important;
   }
@@ -937,6 +1037,35 @@ html[data-theme="light"] .sq-hero-bg::after {
   .sq-tutorial {
     background: #ffffff;
     color: #111111;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sq-slideshow {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sq-slideshow-track {
+    transform: none !important;
+    transition: none !important;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .sq-slide {
+    flex: none;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sq-slide-scroll {
+    overflow: visible;
+    padding: 1rem 0;
+    height: auto;
   }
 
   .sq-section {

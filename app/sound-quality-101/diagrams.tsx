@@ -191,6 +191,59 @@ export function HalfSplitDiagram() {
   );
 }
 
+export function ChannelLevelsDiagram() {
+  return (
+    <svg viewBox="0 0 600 240" className="sq-diagram" aria-label="A single channel strip showing gain, fader, meter, and headroom">
+      <text x="300" y="25" textAnchor="middle" fill="var(--accent)" fontSize="14" fontWeight="700">One channel: gain → fader → meter → output</text>
+
+      {/* Input */}
+      <circle cx="60" cy="120" r="30" fill="var(--surface)" stroke="var(--accent)" strokeWidth="2" />
+      <text x="60" y="125" textAnchor="middle" fill="var(--text)" fontSize="10" fontWeight="700">MIC</text>
+
+      <path d="M95 120 L145 120" stroke="var(--accent)" strokeWidth="2" markerEnd="url(#chanArrow)" />
+
+      {/* Gain */}
+      <rect x="155" y="90" width="70" height="60" rx="10" fill="var(--surface)" stroke="#00a6ff" strokeWidth="2" />
+      <circle cx="190" cy="120" r="18" fill="none" stroke="#00a6ff" strokeWidth="2" />
+      <line x1="190" y1="120" x2="190" y2="108" stroke="#00a6ff" strokeWidth="2" />
+      <text x="190" y="165" textAnchor="middle" fill="var(--muted)" fontSize="10">Gain</text>
+
+      <path d="M230 120 L280 120" stroke="var(--accent)" strokeWidth="2" markerEnd="url(#chanArrow)" />
+
+      {/* Fader */}
+      <rect x="290" y="85" width="30" height="90" rx="6" fill="var(--surface)" stroke="var(--accent)" strokeWidth="2" />
+      <rect x="295" y="110" width="20" height="8" rx="4" fill="var(--accent)" />
+      <text x="305" y="190" textAnchor="middle" fill="var(--muted)" fontSize="10">Fader</text>
+
+      <path d="M330 120 L380 120" stroke="var(--accent)" strokeWidth="2" markerEnd="url(#chanArrow)" />
+
+      {/* Meter */}
+      <rect x="390" y="90" width="70" height="60" rx="10" fill="var(--surface)" stroke="#22c55e" strokeWidth="2" />
+      <rect x="405" y="130" width="8" height="12" fill="#22c55e" />
+      <rect x="417" y="120" width="8" height="22" fill="#22c55e" />
+      <rect x="429" y="105" width="8" height="37" fill="#f59e0b" />
+      <rect x="441" y="100" width="8" height="42" fill="#ef4444" />
+      <text x="425" y="165" textAnchor="middle" fill="var(--muted)" fontSize="10">Meter</text>
+
+      <path d="M465 120 L515 120" stroke="var(--accent)" strokeWidth="2" markerEnd="url(#chanArrow)" />
+
+      {/* Output */}
+      <rect x="525" y="95" width="50" height="50" rx="10" fill="var(--surface)" stroke="var(--accent)" strokeWidth="2" />
+      <text x="550" y="123" textAnchor="middle" fill="var(--text)" fontSize="10" fontWeight="700">PA</text>
+
+      {/* Headroom label */}
+      <rect x="180" y="200" width="240" height="28" rx="8" fill="rgba(34, 197, 94, 0.12)" stroke="#22c55e" strokeWidth="1" />
+      <text x="300" y="218" textAnchor="middle" fill="#22c55e" fontSize="10" fontWeight="700">Leave headroom: keep the meter out of the red zone</text>
+
+      <defs>
+        <marker id="chanArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--accent)" />
+        </marker>
+      </defs>
+    </svg>
+  );
+}
+
 export function GoodSoundSpectrum() {
   const checks = [
     "Intelligible",

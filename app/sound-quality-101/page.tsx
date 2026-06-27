@@ -12,10 +12,8 @@ import {
   SlidersHorizontal,
   BookOpen,
   Download,
-  Brain,
   List,
   Gauge,
-  HeartPulse,
   Thermometer,
   Wrench,
   Volume2,
@@ -30,6 +28,7 @@ import {
   DriftTimeline,
   HalfSplitDiagram,
   GoodSoundSpectrum,
+  ChannelLevelsDiagram,
 } from "./diagrams";
 import "./docs.css";
 
@@ -60,12 +59,10 @@ function loadHtml2Pdf() {
 const sectionIds = [
   "hero",
   "overview",
-  "engineer-mindset",
-  "fault-categories",
-  "reading-meters",
-  "sound-health-room",
-  "system-drift",
-  "fix-last-workflow",
+  "factors-affecting-sound",
+  "loudness-levels",
+  "hardware-software",
+  "measuring-troubleshooting",
   "glossary",
 ];
 
@@ -355,7 +352,7 @@ export default function SoundQuality101Page() {
                   <div className="sq-lesson-hero-content">
                     <div className="sq-lesson-number">
                       <Volume2 size={14} />
-                      Overview
+                      Module 1
                     </div>
                     <h2 className="sq-lesson-title">What is Good Sound?</h2>
                     <p className="sq-lesson-subtitle">The goal before the fix</p>
@@ -366,27 +363,6 @@ export default function SoundQuality101Page() {
                     Good sound should be intelligible, evenly balanced across low, mid, and high frequencies, free from feedback, hum, clipping, and excessive noise, while remaining comfortable to listen to and faithful to the original performance.
                   </p>
                   <GoodSoundSpectrum />
-
-                  <div className="sq-grid">
-                    <div className="sq-content-block">
-                      <h4>Loudness management</h4>
-                      <ul>
-                        <li><strong>Comfortable level:</strong> the sound should be loud enough to hear clearly without hurting the ears.</li>
-                        <li><strong>Safety range:</strong> keep long exposure below 85–90 dB SPL; peaks below 100 dB.</li>
-                        <li><strong>Dynamic range:</strong> allow quiet moments to stay quiet and loud moments to stay powerful.</li>
-                        <li><strong>Audience size:</strong> a larger crowd absorbs more sound, so the level may need to rise slightly.</li>
-                      </ul>
-                    </div>
-                    <div className="sq-content-block">
-                      <h4>Channel levels</h4>
-                      <ul>
-                        <li><strong>Gain staging:</strong> set input gain so each channel is strong and clean, not noisy or clipped.</li>
-                        <li><strong>Fader balance:</strong> lead vocals and speech should sit on top; instruments support, not fight.</li>
-                        <li><strong>Headroom:</strong> leave a few dB of space before 0 dB so sudden peaks do not distort.</li>
-                        <li><strong>Group balance:</strong> drums, bass, keys, and vocals should each have their own clear space.</li>
-                      </ul>
-                    </div>
-                  </div>
 
                   <div className="sq-grid">
                     <div className="sq-content-block">
@@ -417,47 +393,69 @@ export default function SoundQuality101Page() {
         <section className="sq-slide">
           <div className="sq-slide-scroll">
             <div className="sq-slide-content">
-          {/* Module 1: Think Like an Engineer */}
+          {/* Module 2: Factors Affecting Sound Quality */}
           <motion.article
-            id="engineer-mindset"
+            id="factors-affecting-sound"
             className="sq-lesson-card"
-            data-accent="purple"
+            data-accent="pink"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             tabIndex={0}
-            aria-label="Think like an engineer"
+            aria-label="Factors affecting sound quality"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/console.png)" }}>
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/profile.png)" }}>
               <div className="sq-lesson-hero-content">
                 <div className="sq-lesson-number">
-                  <Brain size={14} />
-                  Module 1
+                  <List size={14} />
+                  Module 2
                 </div>
-                <h2 className="sq-lesson-title">Think Like an Engineer</h2>
-                <p className="sq-lesson-subtitle">Don't trust your ears</p>
+                <h2 className="sq-lesson-title">Factors Affecting Sound Quality</h2>
+                <p className="sq-lesson-subtitle">Room, speakers, and the sound itself</p>
               </div>
             </div>
             <div className="sq-lesson-body">
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                Good sound is not created by turning knobs. Good sound is created by finding the real cause of bad sound.
+                Sound quality is decided by the room, the speakers, the mix, and the listener. If one of these is wrong, the sound feels wrong even when the equipment is good.
               </p>
-              <EarBiasDiagram />
+              <RoomAcousticsDiagram />
               <div className="sq-grid">
                 <div className="sq-content-block">
-                  <h4>Why your ears can lie</h4>
+                  <h4>Room acoustics</h4>
+                  <p>Empty rooms with hard walls ring and sound muddy. A full room absorbs sound and tightens the bass. Curtains and carpet soften high frequencies. Concrete and glass make the sound bright and harsh.</p>
+                </div>
+                <div className="sq-content-block">
+                  <h4>Speaker position</h4>
+                  <p>Speakers in corners add extra bass. Speakers too far apart leave a hole in the middle. A microphone in front of a speaker causes feedback. Two speakers covering the same place cause comb filtering.</p>
+                </div>
+              </div>
+
+              <div className="sq-grid" style={{ marginTop: "1.5rem" }}>
+                <div className="sq-content-block">
+                  <h4>Five signs of healthy sound</h4>
                   <ul>
-                    <li><strong>They favour the middle:</strong> sounds around 2–5 kHz always feel louder than they really are.</li>
-                    <li><strong>They get tired:</strong> after a few minutes of loud sound, your ears stop hearing problems.</li>
-                    <li><strong>They get used to bad sound:</strong> a muddy mix can start sounding normal if you listen long enough.</li>
+                    <li><strong>Balance:</strong> bass, mids, and treble work together.</li>
+                    <li><strong>Dynamic range:</strong> quiet and loud parts are both clear.</li>
+                    <li><strong>Low noise:</strong> the gaps between notes are clean.</li>
+                    <li><strong>No distortion:</strong> the sound is smooth, not fuzzy or square.</li>
+                    <li><strong>No clipping:</strong> the level meter never stays at the top.</li>
                   </ul>
                 </div>
                 <div className="sq-content-block">
-                  <h4>The engineer's job</h4>
-                  <p>First, name what is wrong. Second, find where it started. Third, fix that exact thing. Turning a knob before you know the cause is guessing, and guessing usually makes the sound worse.</p>
+                  <h4>Common problems and their ranges</h4>
+                  <ul>
+                    <li><strong>Mud:</strong> too much 200–500 Hz.</li>
+                    <li><strong>Harsh:</strong> too much 2–5 kHz.</li>
+                    <li><strong>Boxy:</strong> too much 300–600 Hz.</li>
+                    <li><strong>Thin:</strong> not enough low end.</li>
+                    <li><strong>Painful brightness:</strong> too much 6–10 kHz.</li>
+                  </ul>
                 </div>
+              </div>
+              <div className="sq-quote">
+                <strong>Key point:</strong> Speaker position and room treatment fix more than EQ ever will.
               </div>
             </div>
           </motion.article>
@@ -469,27 +467,89 @@ export default function SoundQuality101Page() {
         <section className="sq-slide">
           <div className="sq-slide-scroll">
             <div className="sq-slide-content">
-          {/* Module 2: The 8 Fault Categories */}
+          {/* Module 3: Loudness and Levels */}
           <motion.article
-            id="fault-categories"
+            id="loudness-levels"
             className="sq-lesson-card"
-            data-accent="pink"
+            data-accent="magenta"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="The 8 fault categories"
+            aria-label="Loudness and levels"
+          >
+            <div className="sq-lesson-glow" />
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/library.png)" }}>
+              <div className="sq-lesson-hero-content">
+                <div className="sq-lesson-number">
+                  <Gauge size={14} />
+                  Module 3
+                </div>
+                <h2 className="sq-lesson-title">Loudness and Levels</h2>
+                <p className="sq-lesson-subtitle">How loud is loud enough</p>
+              </div>
+            </div>
+            <div className="sq-lesson-body">
+              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
+                Loudness is not just volume. It is comfort, safety, clarity, and balance. If the level is wrong, the audience stops listening before they hear the message.
+              </p>
+              <ChannelLevelsDiagram />
+              <div className="sq-grid">
+                <div className="sq-content-block">
+                  <h4>Loudness management</h4>
+                  <ul>
+                    <li><strong>Comfortable level:</strong> the sound should be loud enough to hear clearly without hurting the ears.</li>
+                    <li><strong>Safety range:</strong> keep long exposure below 85–90 dB SPL; peaks below 100 dB.</li>
+                    <li><strong>Dynamic range:</strong> allow quiet moments to stay quiet and loud moments to stay powerful.</li>
+                    <li><strong>Audience size:</strong> a larger crowd absorbs more sound, so the level may need to rise slightly.</li>
+                    <li><strong>LUFS:</strong> how loud it sounds to a human. Target around -14 for music and -16 for speech.</li>
+                  </ul>
+                </div>
+                <div className="sq-content-block">
+                  <h4>Channel levels</h4>
+                  <ul>
+                    <li><strong>Gain staging:</strong> set input gain so each channel is strong and clean, not noisy or clipped.</li>
+                    <li><strong>Fader balance:</strong> lead vocals and speech should sit on top; instruments support, not fight.</li>
+                    <li><strong>Headroom:</strong> leave a few dB of space before 0 dB so sudden peaks do not distort.</li>
+                    <li><strong>Group balance:</strong> drums, bass, keys, and vocals should each have their own clear space.</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="sq-quote">
+                <strong>Key point:</strong> A loud mix is not a good mix. A clear and comfortable mix is a good mix.
+              </div>
+            </div>
+          </motion.article>
+
+            </div>
+          </div>
+        </section>
+
+        <section className="sq-slide">
+          <div className="sq-slide-scroll">
+            <div className="sq-slide-content">
+          {/* Module 4: Hardware and Software Effect on Sound Quality */}
+          <motion.article
+            id="hardware-software"
+            className="sq-lesson-card sq-bonus-card"
+            data-accent="module6"
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
+            tabIndex={0}
+            aria-label="Hardware and software effect on sound quality"
           >
             <div className="sq-lesson-glow" />
             <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/dashboard.png)" }}>
               <div className="sq-lesson-hero-content">
                 <div className="sq-lesson-number">
-                  <List size={14} />
-                  Module 2
+                  <Thermometer size={14} />
+                  Module 4
                 </div>
-                <h2 className="sq-lesson-title">The 8 Fault Categories</h2>
-                <p className="sq-lesson-subtitle">Name the cause before you touch a control</p>
+                <h2 className="sq-lesson-title">Hardware and Software Effect</h2>
+                <p className="sq-lesson-subtitle">The physical and digital causes of bad sound</p>
               </div>
             </div>
             <div className="sq-lesson-body">
@@ -536,6 +596,29 @@ export default function SoundQuality101Page() {
                   </ul>
                 </div>
               </div>
+
+              <h4 style={{ marginTop: "2rem" }}>Common software problems</h4>
+              <div className="sq-tree-root">Problem: No sound from one channel</div>
+              <div className="sq-tree-node">
+                <strong>Step 1:</strong> Check the channel mute, fader, and output routing.
+                <br /><strong>Step 2:</strong> Bypass plugins one by one to see if one is blocking the signal.
+              </div>
+              <div className="sq-tree-root warning">Problem: Clicks or pops in the audio</div>
+              <div className="sq-tree-node">
+                <strong>Step 1:</strong> Increase the buffer size in the audio driver.
+                <br /><strong>Step 2:</strong> Make sure the sample rate matches across the interface, DAW, and operating system.
+              </div>
+              <div className="sq-tree-root success">Problem: Delay between sound and video</div>
+              <div className="sq-tree-node">
+                <strong>Step 1:</strong> Remove or reduce latency-heavy plugins.
+                <br /><strong>Step 2:</strong> Check the driver buffer and report latency settings.
+              </div>
+              <div className="sq-tree-root">Problem: Sound changes after a restart</div>
+              <div className="sq-tree-node">
+                <strong>Step 1:</strong> Check if a preset, scene, or firmware was reset to default.
+                <br /><strong>Step 2:</strong> Compare the saved snapshot against the current settings.
+              </div>
+
               <div className="sq-quote">
                 <strong>Class line:</strong> Our first job is not to fix the sound. Our first job is to name the category where the problem started.
               </div>
@@ -549,32 +632,51 @@ export default function SoundQuality101Page() {
         <section className="sq-slide">
           <div className="sq-slide-scroll">
             <div className="sq-slide-content">
-          {/* Module 3: Reading the Meters */}
+          {/* Module 5: Measuring and Troubleshooting Bad Sound */}
           <motion.article
-            id="reading-meters"
+            id="measuring-troubleshooting"
             className="sq-lesson-card"
-            data-accent="blue"
+            data-accent="navy"
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10%" }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
             tabIndex={0}
-            aria-label="Reading the meters"
+            aria-label="Measuring and troubleshooting bad sound"
           >
             <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/library.png)" }}>
+            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/reference.png)" }}>
               <div className="sq-lesson-hero-content">
                 <div className="sq-lesson-number">
-                  <Gauge size={14} />
-                  Module 3
+                  <Wrench size={14} />
+                  Module 5
                 </div>
-                <h2 className="sq-lesson-title">Reading the Meters</h2>
-                <p className="sq-lesson-subtitle">Meters correct your ears</p>
+                <h2 className="sq-lesson-title">Measuring & Troubleshooting</h2>
+                <p className="sq-lesson-subtitle">Don't trust your ears. Trust the process.</p>
               </div>
             </div>
             <div className="sq-lesson-body">
               <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
-                Meters do not replace listening. They help you hear what your ears missed. Start with these four readings.
+                Good engineers measure first, listen second, and only then fix the exact thing that is wrong. Meters correct your ears. A clear process keeps you from guessing.
+              </p>
+              <EarBiasDiagram />
+              <div className="sq-grid">
+                <div className="sq-content-block">
+                  <h4>Why your ears can lie</h4>
+                  <ul>
+                    <li><strong>They favour the middle:</strong> sounds around 2–5 kHz always feel louder than they really are.</li>
+                    <li><strong>They get tired:</strong> after a few minutes of loud sound, your ears stop hearing problems.</li>
+                    <li><strong>They get used to bad sound:</strong> a muddy mix can start sounding normal if you listen long enough.</li>
+                  </ul>
+                </div>
+                <div className="sq-content-block">
+                  <h4>The engineer's job</h4>
+                  <p>First, name what is wrong. Second, find where it started. Third, fix that exact thing. Turning a knob before you know the cause is guessing, and guessing usually makes the sound worse.</p>
+                </div>
+              </div>
+
+              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)", marginTop: "1.5rem" }}>
+                Meters do not replace listening. They confirm what you think you hear. Start with the four level readings, then check the shape of the signal.
               </p>
               <MeterDashboard />
               <div className="sq-grid">
@@ -596,126 +698,12 @@ export default function SoundQuality101Page() {
                   </ul>
                 </div>
               </div>
-              <div className="sq-grid" style={{ marginTop: "1rem" }}>
-                <div className="sq-content-block">
-                  <h4>Room meters</h4>
-                  <ul>
-                    <li><strong>STI:</strong> how easy speech is to understand. Above 0.6 is good.</li>
-                    <li><strong>C80:</strong> how clear fast notes and words are. Above 0 dB is good.</li>
-                    <li><strong>RT60:</strong> how long the room rings. Shorter for speech, longer for music.</li>
-                  </ul>
-                </div>
-                <div className="sq-content-block">
-                  <h4>The real question</h4>
-                  <p><strong>"Why does the same mix sound different at low volume?"</strong> Because your ears hear mid and high frequencies differently at low volume. Trust the meter, not the feeling.</p>
-                </div>
-              </div>
-            </div>
-          </motion.article>
 
-            </div>
-          </div>
-        </section>
-
-        <section className="sq-slide">
-          <div className="sq-slide-scroll">
-            <div className="sq-slide-content">
-          {/* Module 4: Sound Health & Room Acoustics */}
-          <motion.article
-            id="sound-health-room"
-            className="sq-lesson-card"
-            data-accent="magenta"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="Sound health and room acoustics"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/profile.png)" }}>
-              <div className="sq-lesson-hero-content">
-                <div className="sq-lesson-number">
-                  <HeartPulse size={14} />
-                  Module 4
-                </div>
-                <h2 className="sq-lesson-title">Sound Health & Room Acoustics</h2>
-                <p className="sq-lesson-subtitle">Healthy sound, healthy room</p>
-              </div>
-            </div>
-            <div className="sq-lesson-body">
-              <div className="sq-grid">
-                <div className="sq-content-block">
-                  <h4>Five signs of healthy sound</h4>
-                  <ul>
-                    <li><strong>Balance:</strong> bass, mids, and treble work together.</li>
-                    <li><strong>Dynamic range:</strong> quiet and loud parts are both clear.</li>
-                    <li><strong>Low noise:</strong> the gaps between notes are clean.</li>
-                    <li><strong>No distortion:</strong> the sound is smooth, not fuzzy or square.</li>
-                    <li><strong>No clipping:</strong> the level meter never stays at the top.</li>
-                  </ul>
-                </div>
-                <div className="sq-content-block">
-                  <h4>Common problems and their ranges</h4>
-                  <ul>
-                    <li><strong>Mud:</strong> too much 200–500 Hz.</li>
-                    <li><strong>Harsh:</strong> too much 2–5 kHz.</li>
-                    <li><strong>Boxy:</strong> too much 300–600 Hz.</li>
-                    <li><strong>Thin:</strong> not enough low end.</li>
-                    <li><strong>Painful brightness:</strong> too much 6–10 kHz.</li>
-                  </ul>
-                </div>
-              </div>
-              <RoomAcousticsDiagram />
-              <div className="sq-grid" style={{ marginTop: "1rem" }}>
-                <div className="sq-content-block">
-                  <h4>Room acoustics</h4>
-                  <p>Empty rooms with hard walls ring and sound muddy. A full room absorbs sound and tightens the bass. Curtains and carpet soften high frequencies. Concrete and glass make the sound bright and harsh.</p>
-                </div>
-                <div className="sq-content-block">
-                  <h4>Speaker position matters</h4>
-                  <p>Speakers in corners add extra bass. Speakers too far apart leave a hole in the middle. A microphone in front of a speaker causes feedback. Two speakers covering the same place cause comb filtering.</p>
-                </div>
-              </div>
-              <div className="sq-quote">
-                <strong>Key point:</strong> Speaker position and room treatment fix more than EQ ever will.
-              </div>
-            </div>
-          </motion.article>
-
-            </div>
-          </div>
-        </section>
-
-        <section className="sq-slide">
-          <div className="sq-slide-scroll">
-            <div className="sq-slide-content">
-          {/* Module 5: System Drift & Verification */}
-          <motion.article
-            id="system-drift"
-            className="sq-lesson-card sq-bonus-card"
-            data-accent="module6"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="System drift and verification"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/module6.png)" }}>
-              <div className="sq-lesson-hero-content">
-                <div className="sq-lesson-number">
-                  <Thermometer size={14} />
-                  Module 5
-                </div>
-                <h2 className="sq-lesson-title">System Drift & Verification</h2>
-                <p className="sq-lesson-subtitle">Systems do not stay the same</p>
-              </div>
-            </div>
-            <div className="sq-lesson-body">
+              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)", marginTop: "1.5rem" }}>
+                Systems do not stay the same. They drift. Good engineers verify before the show and watch the meters during the show.
+              </p>
               <DriftTimeline />
-              <div className="sq-grid">
+              <div className="sq-grid" style={{ marginTop: "1rem" }}>
                 <div className="sq-content-block">
                   <h4>Why sound changes during the day</h4>
                   <ul>
@@ -738,44 +726,8 @@ export default function SoundQuality101Page() {
                   </ul>
                 </div>
               </div>
-              <div className="sq-quote">
-                <strong>Golden Rule:</strong> Good engineers verify. They do not assume yesterday's settings still work today.
-              </div>
-            </div>
-          </motion.article>
 
-            </div>
-          </div>
-        </section>
-
-        <section className="sq-slide">
-          <div className="sq-slide-scroll">
-            <div className="sq-slide-content">
-          {/* Module 6: The Fix-Last Workflow */}
-          <motion.article
-            id="fix-last-workflow"
-            className="sq-lesson-card"
-            data-accent="navy"
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.05 }}
-            tabIndex={0}
-            aria-label="The fix-last workflow"
-          >
-            <div className="sq-lesson-glow" />
-            <div className="sq-lesson-hero" style={{ backgroundImage: "url(/assets/hero/reference.png)" }}>
-              <div className="sq-lesson-hero-content">
-                <div className="sq-lesson-number">
-                  <Wrench size={14} />
-                  Module 6
-                </div>
-                <h2 className="sq-lesson-title">The Fix-Last Workflow</h2>
-                <p className="sq-lesson-subtitle">EQ is the last tool, not the first</p>
-              </div>
-            </div>
-            <div className="sq-lesson-body">
-              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)" }}>
+              <p className="mb-6 leading-relaxed" style={{ color: "var(--muted)", marginTop: "1.5rem" }}>
                 EQ is not the first tool you reach for. It is the last. First, find the real problem. Then fix it. Only then use EQ to shape the tone.
               </p>
 
@@ -833,28 +785,6 @@ export default function SoundQuality101Page() {
               <div className="sq-tree-node">
                 <strong>Step 1:</strong> Check if two speakers cover the same area.
                 <br /><strong>Step 2:</strong> If yes, one cable may be wired backwards, causing phase cancellation. Flip the polarity or fix the wiring.
-              </div>
-
-              <h4 style={{ marginTop: "2rem" }}>Common software problems</h4>
-              <div className="sq-tree-root">Problem: No sound from one channel</div>
-              <div className="sq-tree-node">
-                <strong>Step 1:</strong> Check the channel mute, fader, and output routing.
-                <br /><strong>Step 2:</strong> Bypass plugins one by one to see if one is blocking the signal.
-              </div>
-              <div className="sq-tree-root warning">Problem: Clicks or pops in the audio</div>
-              <div className="sq-tree-node">
-                <strong>Step 1:</strong> Increase the buffer size in the audio driver.
-                <br /><strong>Step 2:</strong> Make sure the sample rate matches across the interface, DAW, and operating system.
-              </div>
-              <div className="sq-tree-root success">Problem: Delay between sound and video</div>
-              <div className="sq-tree-node">
-                <strong>Step 1:</strong> Remove or reduce latency-heavy plugins.
-                <br /><strong>Step 2:</strong> Check the driver buffer and report latency settings.
-              </div>
-              <div className="sq-tree-root">Problem: Sound changes after a restart</div>
-              <div className="sq-tree-node">
-                <strong>Step 1:</strong> Check if a preset, scene, or firmware was reset to default.
-                <br /><strong>Step 2:</strong> Compare the saved snapshot against the current settings.
               </div>
 
               <div className="sq-quote">
@@ -943,6 +873,31 @@ export default function SoundQuality101Page() {
                   <strong>Reference Track</strong>
                   <p>A song you know well, played through the PA to compare against your live mix.</p>
                 </div>
+
+                <div className="sq-glossary-section">
+                  <h4>EQRoom meters</h4>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>VU Meter</strong>
+                  <p>Shows the peak and RMS level of the audio signal in dBFS. Use it to see how close the signal is to clipping and how full the average level feels.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>LUFS Meter</strong>
+                  <p>Measures perceived loudness in Loudness Units relative to Full Scale. Use it to keep music around -14 LUFS and speech around -16 LUFS.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Meter Bridge / Tall Meter</strong>
+                  <p>Shows left and right channel levels plus gain reduction (GR) from compressors or limiters. Use it to check balance and how much dynamics processing is being applied.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Analog Gauge</strong>
+                  <p>A round meter for physical-system values such as temperature, voltage, or load. Use it to spot hardware stress before it becomes audible.</p>
+                </div>
+                <div className="sq-glossary-item">
+                  <strong>Telemetry / SCADA Bar</strong>
+                  <p>Computes peak, true peak, RMS, LUFS, crest factor, dynamic range, and stereo correlation. Use it to judge the overall health and balance of the mix.</p>
+                </div>
+
                 <div className="sq-glossary-item">
                   <strong>Feedback</strong>
                   <p>The loud squeal that happens when a microphone picks up sound from its own speaker.</p>

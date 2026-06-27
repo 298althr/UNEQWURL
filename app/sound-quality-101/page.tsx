@@ -366,6 +366,28 @@ export default function SoundQuality101Page() {
                     Good sound should be intelligible, evenly balanced across low, mid, and high frequencies, free from feedback, hum, clipping, and excessive noise, while remaining comfortable to listen to and faithful to the original performance.
                   </p>
                   <GoodSoundSpectrum />
+
+                  <div className="sq-grid">
+                    <div className="sq-content-block">
+                      <h4>Loudness management</h4>
+                      <ul>
+                        <li><strong>Comfortable level:</strong> the sound should be loud enough to hear clearly without hurting the ears.</li>
+                        <li><strong>Safety range:</strong> keep long exposure below 85–90 dB SPL; peaks below 100 dB.</li>
+                        <li><strong>Dynamic range:</strong> allow quiet moments to stay quiet and loud moments to stay powerful.</li>
+                        <li><strong>Audience size:</strong> a larger crowd absorbs more sound, so the level may need to rise slightly.</li>
+                      </ul>
+                    </div>
+                    <div className="sq-content-block">
+                      <h4>Channel levels</h4>
+                      <ul>
+                        <li><strong>Gain staging:</strong> set input gain so each channel is strong and clean, not noisy or clipped.</li>
+                        <li><strong>Fader balance:</strong> lead vocals and speech should sit on top; instruments support, not fight.</li>
+                        <li><strong>Headroom:</strong> leave a few dB of space before 0 dB so sudden peaks do not distort.</li>
+                        <li><strong>Group balance:</strong> drums, bass, keys, and vocals should each have their own clear space.</li>
+                      </ul>
+                    </div>
+                  </div>
+
                   <div className="sq-grid">
                     <div className="sq-content-block">
                       <h4>Clear and balanced</h4>
